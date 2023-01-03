@@ -2,9 +2,10 @@
 
 ```mermaid
 classDiagram
-  Account "1" --|> "1" User : get
-  Message "1" <|-- "0.N" Account : send
-  UserMessage "1" <|-- "0.N" Account : send
+  Channel "0.N" <|-- "0.N" User : join
+  ChannelMessage "1" <|-- "0.N" User : send
+  ChannelMessage "1" --|> "0.N" Channel : rattached
+  PrivateMessage "1" <|-- "0.N" User : send
    
   class User{
     int id
@@ -18,20 +19,28 @@ classDiagram
     date updated_at
   }
 
-  class Account{
-    User
-    string access_token
-    string refresh_token
+  class Channel {
+    int id
+    string name
+    date created_at
+    date updated_at
   }
 
-  class Message{
+  class ChannelMessage{
     int id
     string message
+    int user_id (User)
+    int channel_id (Channel)
+    date created_at
+    date updated_at
   }
 
-  class UserMessage{
+  class PrivateMessage{
     int id
-    int id_user_from
-    int id_user_to
+    string message
+    int id_user_from (User)
+    int id_user_to (User)
+    date created_at
+    date updated_at
   }
 ```

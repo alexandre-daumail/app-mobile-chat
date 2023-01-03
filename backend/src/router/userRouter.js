@@ -21,17 +21,22 @@ router.post('/login', async (req, res) => {
 
 
 /* PRIVATE (USER/ADMIN) : USER INFORMATION */
-router.get('/users/:id', authMiddleware, async (req, res) => {
+router.get('/user/:id', authMiddleware, async (req, res) => {
   userService.getOneUser(req, res);
 });
 
 /* PRIVATE (USER/ADMIN) : UPDATE AN USER */
-router.put('/users/:id', authMiddleware, async (req, res) => {
+router.put('/user/:id', authMiddleware, async (req, res) => {
   userService.updateUser(req, res);
 });
 
+/* PRIVATE (USER/ADMIN) : JOINING A CHANNEL */
+router.post('/user/:id/channel/:channel_id', authMiddleware, async (req, res) => {
+  userService.userJoinChannel(req, res);
+});
+
 /* PRIVATE (ADMIN) : DELETE AN USER */
-router.delete('/users/:id', authMiddleware, async (req, res) => {
+router.delete('/user/:id', authMiddleware, async (req, res) => {
   userService.deleteUser(req, res);
 });
 

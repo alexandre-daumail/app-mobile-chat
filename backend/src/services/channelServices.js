@@ -1,6 +1,7 @@
 const { rolesMiddleware } = require("../middlewares/roleMiddleware");
 const db = require("../models");
 const Channel = db.channel;
+const UserChanel = db.userChannel;
 
 
 /* 

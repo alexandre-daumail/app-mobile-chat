@@ -3,6 +3,7 @@ const { generateToken } = require('../jwt/authJwt');
 const { rolesMiddleware } = require("../middlewares/roleMiddleware");
 const db = require("../models");
 const User = db.user;
+const UserChannel = db.userChannel;
 
 require('dotenv').config()
 
@@ -125,30 +126,28 @@ async function getOneUser(req, res){
   PRIVATE (USER) : 
   JOIN A GROUP 
 */
-async function joinGroupForUser(req, res){  
+async function userJoinChannel(req, res){  
   const id = req.params.id;
+  const channelId = req.params.channel_id;
 
   const userToken = req.body.tokenData;
   const userRole = await rolesMiddleware(userToken);
 
   if((userRole === 'USER' && userToken.id == id) || (userRole === 'ADMIN')) {
-    User.update(req.body, {
-      where: { id: id }
-    })
-    .then(num => {
-      if (num == 1) {
-        res.send({
-          message: "User group was added successfully."
-        });
-      } else {
-        res.send({
-          message: `Cannot update User group with id n°${id}. Maybe User was not found or your input is empty!`
-        });
-      }
+    const joinChannel = {
+      UserId: id,
+      ChannelId: channelId,
+    };
+  
+    UserChannel.create(joinChannel)
+    .then(user => {
+      res.send({
+        message: `User successfully joined a channel.`
+      });
     })
     .catch(err => {
       res.status(500).send({
-        message: "Error updating User group with id n°" + id
+        message: err.message || "Some error occurred. Please retry."
       });
     });
   } else {
@@ -239,7 +238,7 @@ module.exports = {
   createUser,
   getJwt,
   getOneUser,
-  joinGroupForUser,
+  userJoinChannel,
   updateUser,
   deleteUser
 }

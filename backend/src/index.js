@@ -1,5 +1,6 @@
 const userRouter = require('./router/userRouter');
-// const groupRouter = require('./router/groupRouter');
+const channelRouter = require('./router/channelRouter');
+const channelMessageRouter = require('./router/channelMessageRouter')
 const port = 3000;
 
 const express = require('express');
@@ -19,11 +20,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json())
 
 app.use(userRouter);
-// app.use(groupRouter);
+app.use(channelRouter);
+app.use(channelMessageRouter)
 
 app.get('*', (req, res) => {
   return res.status(404).json({ 
-    message: 'Page not found. You can try the followings: /users ; /groups ; /groups/users ; /register ; /login' 
+    message: 'Page not found. You can try the followings: /users ; /channel ; /channel/users ; /register ; /login' 
   })
 })
 
