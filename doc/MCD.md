@@ -1,11 +1,11 @@
-# Model Conceptuel de Données
+# Modèle Conceptuel de Données
 
 ```mermaid
 classDiagram
-  Channel "0.N" <|-- "0.N" User : join
-  ChannelMessage "1" <|-- "0.N" User : send
-  ChannelMessage "1" --|> "0.N" Channel : rattached
-  PrivateMessage "1" <|-- "0.N" User : send
+  Channel "0.N" -- "0.N" User : join
+  ChannelMessage "1" -- "0.N" User : send
+  ChannelMessage "1" -- "0.N" Channel : rattached
+  PrivateMessage "1" -- "0.N" User : send
    
   class User{
     int id
@@ -38,8 +38,8 @@ classDiagram
   class PrivateMessage{
     int id
     string message
-    int id_user_from (User)
-    int id_user_to (User)
+    int sender_id (User)
+    int receiver_id (User)
     date created_at
     date updated_at
   }
