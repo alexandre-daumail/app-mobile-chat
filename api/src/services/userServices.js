@@ -5,7 +5,6 @@ const { securityMiddleware } = require('../middlewares/securityMiddleware');
 const db = require("../models");
 const User = db.user;
 const UserChannel = db.userChannel;
-const UserConversation = db.userConversation;
 
 require('dotenv').config()
 
@@ -38,6 +37,7 @@ async function createUser(req, res){
   });
 
   const user = {
+    username: req.body.username,
     email: req.body.email,
     password: hash_pwd,
     firstname: req.body.firstname,
@@ -101,7 +101,7 @@ async function getOneUser(req, res){
 
   if((userControl === 1) || (userControl === 2)) {
     User.findByPk(id, {
-      attributes: ['email', 'firstname', 'lastname'],
+      attributes: ['username', 'email', 'firstname', 'lastname'],
     })
     .then(user => {
       if (user) {

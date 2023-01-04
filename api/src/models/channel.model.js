@@ -13,6 +13,10 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.INTEGER,
       allowNull: false
     },
+    private: {
+      type: Sequelize.BOOLEAN,
+      allowNull: false
+    },
     createdAt: {
       field: 'created_at',
       type: "TIMESTAMP",

@@ -19,7 +19,6 @@ router.post('/login', async (req, res) => {
   userService.getJwt(req, res);
 })
 
-
 /* PRIVATE (USER/ADMIN) : USER INFORMATION */
 router.get('/user/:id', authMiddleware, async (req, res) => {
   userService.getOneUser(req, res);

@@ -2,7 +2,7 @@ const { securityMiddleware } = require("../middlewares/securityMiddleware");
 
 const db = require("../models");
 const Channel = db.channel;
-const UserChanel = db.userChannel;
+const UserChannel = db.userChannel
 
 
 /* 
@@ -11,7 +11,7 @@ const UserChanel = db.userChannel;
 */
 async function getAllChannel(req, res){
   return Channel.findAll({
-    attributes: ['name']
+    attributes: ['name', 'private']
   })
   .then(groups => {
     res.json(groups);
@@ -30,7 +30,7 @@ async function getAllChannel(req, res){
 */
 async function getAllUsersInChannel(req, res){
   await Channel.findAll({
-    attributes: ['name'],
+    attributes: ['name', 'private'],
     include: [
       { 
         model: db.user, 
@@ -59,12 +59,19 @@ async function createChannel(req, res){
 
   const channel = {
     name: req.body.name,
+    private: req.body.private,
     creator: userToken.id,
   };
 
   if((userControl === 1) || (userControl === 2)) {
     Channel.create(channel)
     .then(data => {
+      const joinChannel = {
+        UserId: data.creator,
+        ChannelId: data.id,
+      };
+      UserChannel.create(joinChannel)
+
       res.send({
         message: `Channel "${data.name}" was created successfully.`
       });
@@ -120,51 +127,10 @@ async function updateChannel(req, res){
   }
 }
 
-/* 
-  PUBLIC : 
-  GROUPES LIST WITH USERS
-*/
-// async function updateUsersInChannel(req, res){
-//   const id = req.params.id;
-//   const usersArray = req.body.Users;
-//   const newUsersArray = [];
-
-//   const userRole = await rolesMiddleware(req.body.tokenData);
-
-//   if(userRole === 'ADMIN') {
-//     const channelExist = await Channel.findByPk(id);
-
-//     if(!channelExist) res.send({ message: "This Channel doesn't exists"});
-
-//     for (const user of usersArray) {
-//       let userToUpdate = await db.user.update(
-//         { channel_id: id },
-//         { where: { id: user }}
-//       )
-
-//       newUsersArray.push(userToUpdate)
-//     }
-
-//     if(newUsersArray.length == usersArray.length) {
-//       res.send({
-//         message: "User channel was added successfully."
-//       });
-//     } else {
-//       res.send({
-//         message: "Error updating channel's users. This channel may not exists"
-//       });
-//     }
-//   } else {
-//     res.status(500).send({
-//       message: "You're not autorized to modify users in a channel"
-//     });
-//   }
-// }
-
 
 /* 
   PRIVATE (ADMIN) : 
-  DELETE A GROUP
+  DELETE AN EXISTING CHANNEL
 */
 async function deleteChannel(req, res){
   const id = req.params.id;
@@ -206,6 +172,5 @@ module.exports = {
   getAllUsersInChannel,
   createChannel,
   updateChannel,
-  // updateUsersInChannel,
   deleteChannel
 }
