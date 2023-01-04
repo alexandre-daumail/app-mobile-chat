@@ -1,4 +1,4 @@
-const { rolesMiddleware } = require("../middlewares/roleMiddleware");
+const { securityMiddleware } = require('../middlewares/securityMiddleware');
 const db = require("../models");
 const Messages = db.chanelMessage;
 
@@ -32,19 +32,19 @@ async function getAllMessages(req, res){
   CREATE A GROUP 
 */
 async function createMessage(req, res){
-  const userRole = await rolesMiddleware(req.body.tokenData);
-
   const channelId = req.params.id;
   const userId = req.params.user_id;
 
   const userToken = req.body.tokenData;
+  const userControl = await securityMiddleware(userToken, userId);
+
   const msg = {
     message: req.body.message,
     channel_id: channelId,
     user_id: userToken.id
   };
 
-  if((userRole === 'USER' && userToken.id == userId) || (userRole === 'ADMIN')) {
+  if((userControl === 1) || (userControl === 2)) {
     Messages.create(msg)
     .then(data => {
       res.send({
@@ -70,18 +70,18 @@ async function createMessage(req, res){
   UPDATE A GROUP 
 */
 async function updateMessage(req, res){
-  const userRole = await rolesMiddleware(req.body.tokenData);
-
   const channelId = req.params.id;
   const userId = req.params.user_id;
   const msgId = req.params.message_id;
 
   const userToken = req.body.tokenData;
+  const userControl = await securityMiddleware(userToken, userId);
+
   const msg = {
     message: req.body.message,
   };
 
-  if((userRole === 'USER' && userToken.id == userId) || (userRole === 'ADMIN')) {
+  if((userControl === 1) || (userControl === 2)) {
     Messages.update(msg, {
       where: {
         id: msgId,
@@ -113,15 +113,14 @@ async function updateMessage(req, res){
   DELETE A GROUP
 */
 async function deleteMessage(req, res){
-  const userRole = await rolesMiddleware(req.body.tokenData);
-
   const channelId = req.params.id;
   const userId = req.params.user_id;
   const msgId = req.params.message_id;
 
   const userToken = req.body.tokenData;
+  const userControl = await securityMiddleware(userToken, userId);
 
-  if((userRole === 'USER' && userToken.id == userId) || (userRole === 'ADMIN')) {
+  if((userControl === 1) || (userControl === 2)) {
     Messages.destroy({
       where: { 
         id: msgId,
