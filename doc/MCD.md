@@ -3,10 +3,10 @@
 ```mermaid
 classDiagram
   direction LR
-  channel "0/N" -- "0/N" user : join
+  channel "0/N" -- "1/N" user : relate
   private_message "N/N" -- "0/N" user : concern
   channel_message "1/1" -- "0/N" user : send
-  channel_message "1/1" -- "0/N" channel : rattached
+  channel_message "1/1" -- "0/N" channel : send
    
   class user{
     id
