@@ -2,11 +2,12 @@
 
 ```mermaid
 classDiagram
-  Account <|-- User
-  Account <|-- Role
-  Message <|-- Account
-  UserMessage <|-- Account
-   
+  User --|> Channel
+  Channel --|> UserChannel
+  UserChannel --|> ChannelMessage
+  User --|> UserConversation
+  UserConversation --|> ConversationMessage
+  
   class User{
     int id
     string username
@@ -14,30 +15,49 @@ classDiagram
     string lastname
     string email
     string password
+    string role
     date created_at
     date updated_at
   }
-
-  class Role{
-    array []
+  
+  class Channel{
+    int id
+    string name
+    int creator (FK)
+    date created_at
+    date updated_at
   }
-
-  class Account{
-    User
-    Role
-    string access_token
-    string refresh_token
+  
+  class UserChannel{
+    int id
+    int user_id (FK)
+    int channel_id (FK)
+    date created_at
+    date updated_at
   }
-
-  class Message{
+  
+  class ChannelMessage{
     int id
     string message
+    date created_at
+    date updated_at
   }
-
-  class UserMessage{
+  
+  class UserConversation{
     int id
-    int id_user_from
-    int id_user_to
+    int id_user_from (FK)
+    int id_user_to (FK)
+    date created_at
+    date updated_at
+  }
+  
+  class ConversationMessage{
+    int id
     string message
+    int id_user_from (FK)
+    int id_user_to (FK)
+    int conversation_id (FK)
+    date created_at
+    date updated_at
   }
 ```
