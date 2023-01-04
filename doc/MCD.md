@@ -2,45 +2,47 @@
 
 ```mermaid
 classDiagram
-  Channel "0.N" -- "0.N" User : join
-  ChannelMessage "1" -- "0.N" User : send
-  ChannelMessage "1" -- "0.N" Channel : rattached
-  PrivateMessage "1" -- "0.N" User : send
+  direction LR
+  channel "0/N" -- "0/N" user : join
+  private_message "N/N" -- "0/N" user : concern
+  channel_message "1/1" -- "0/N" user : send
+  channel_message "1/1" -- "0/N" channel : rattached
    
-  class User{
-    int id
-    string username
-    string firstname
-    string lastname
-    string email
-    string password
-    string role
-    date created_at
-    date updated_at
+  class user{
+    id
+    username
+    firstname
+    lastname
+    email
+    password
+    role
+    created_at
+    updated_at
+    deleted
   }
 
-  class Channel {
-    int id
-    string name
-    date created_at
-    date updated_at
+  class channel {
+    id
+    name
+    created_at
+    updated_at
   }
 
-  class ChannelMessage{
-    int id
-    string message
-    int user_id (User)
-    int channel_id (Channel)
-    date created_at
-    date updated_at
+  class channel_message{
+    id
+    message
+    created_at
+    updated_at
+    deleted
   }
 
-  class PrivateMessage{
-    int id
-    string message
-    int sender_id (User)
-    int receiver_id (User)
-    date created_at
-    date updated_at
+  class private_message{
+    id
+    message
+    from
+    to
+    created_at
+    updated_at
+    deleted
   }
 ```
