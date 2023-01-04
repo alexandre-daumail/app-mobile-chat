@@ -1,7 +1,6 @@
 const { rolesMiddleware } = require("../middlewares/roleMiddleware");
 const db = require("../models");
 const Messages = db.chanelMessage;
-const Group = db.group;
 
 
 /* 

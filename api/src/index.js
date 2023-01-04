@@ -1,6 +1,7 @@
 const userRouter = require('./router/userRouter');
 const channelRouter = require('./router/channelRouter');
 const channelMessageRouter = require('./router/channelMessageRouter')
+const conversationMessageRouter = require('./router/conversationMessageRouter')
 const port = 3000;
 
 const express = require('express');
@@ -22,6 +23,7 @@ app.use(express.json())
 app.use(userRouter);
 app.use(channelRouter);
 app.use(channelMessageRouter)
+app.use(conversationMessageRouter)
 
 app.get('*', (req, res) => {
   return res.status(404).json({ 

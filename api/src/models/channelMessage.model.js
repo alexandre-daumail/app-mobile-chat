@@ -1,5 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
-  const PrivateMessage = sequelize.define('PrivateMessage', {
+  const ChanelMessage = sequelize.define('ChanelMessage', {
     id: {
       type: Sequelize.INTEGER,
       autoIncrement: true,
@@ -15,9 +15,15 @@ module.exports = (sequelize, Sequelize) => {
       defaultValue: sequelize.literal("CURRENT_TIMESTAMP"),
       allowNull: false,
     },
+    updatedAt: {
+      field: 'updated_at',
+      type: "TIMESTAMP",
+      defaultValue: sequelize.literal("CURRENT_TIMESTAMP"),
+      allowNull: false,
+    },
   }, {
-    tableName: 'private_message'
+    tableName: 'chanel_message'
   });
   
-  return PrivateMessage;
+  return ChanelMessage;
 };

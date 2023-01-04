@@ -1,9 +1,11 @@
 const bcrypt = require('bcrypt');
 const { generateToken } = require('../jwt/authJwt');
-const { rolesMiddleware } = require("../middlewares/roleMiddleware");
+const { securityMiddleware } = require('../middlewares/securityMiddleware');
+
 const db = require("../models");
 const User = db.user;
 const UserChannel = db.userChannel;
+const UserConversation = db.userConversation;
 
 require('dotenv').config()
 
@@ -93,13 +95,13 @@ async function getJwt(req, res){
 */
 async function getOneUser(req, res){
   const id = req.params.id;
-
   const userToken = req.body.tokenData;
-  const userRole = await rolesMiddleware(userToken);
 
-  if((userRole === 'USER' && userToken.id == id) || (userRole === 'ADMIN')) {
+  const userControl = await securityMiddleware(userToken, id);
+
+  if((userControl === 1) || (userControl === 2)) {
     User.findByPk(id, {
-      attributes: ['email', 'firstname', 'lastname', 'channel_id'],
+      attributes: ['email', 'firstname', 'lastname'],
     })
     .then(user => {
       if (user) {
@@ -112,7 +114,7 @@ async function getOneUser(req, res){
     })
     .catch(err => {
       res.status(500).send({
-        message: "Error retrieving User with id n°" + id
+        message: err.message || "Error retrieving User with id n°" + id
       });
     });
   } else {
@@ -129,11 +131,11 @@ async function getOneUser(req, res){
 async function userJoinChannel(req, res){  
   const id = req.params.id;
   const channelId = req.params.channel_id;
-
   const userToken = req.body.tokenData;
-  const userRole = await rolesMiddleware(userToken);
+  
+  const userControl = await securityMiddleware(userToken, id);
 
-  if((userRole === 'USER' && userToken.id == id) || (userRole === 'ADMIN')) {
+  if((userControl === 1) || (userControl === 2)) {
     const joinChannel = {
       UserId: id,
       ChannelId: channelId,
@@ -164,11 +166,11 @@ async function userJoinChannel(req, res){
 */
 async function updateUser(req, res){
   const id = req.params.id;
-
   const userToken = req.body.tokenData;
-  const userRole = await rolesMiddleware(userToken);
 
-  if((userRole === 'USER' && userToken.id == id) || (userRole === 'ADMIN')) {
+  const userControl = await securityMiddleware(userToken, id);
+
+  if((userControl === 1) || (userControl === 2)) {
     User.update(req.body, {
       where: { id: id }
     })
@@ -185,7 +187,7 @@ async function updateUser(req, res){
     })
     .catch(err => {
       res.status(500).send({
-        message: "Error updating User with id n°" + id
+        message: err.message || "Error updating User with id n°" + id
       });
     });
   } else {
@@ -202,10 +204,11 @@ async function updateUser(req, res){
 */
 async function deleteUser(req, res){
   const id = req.params.id;
+  const userToken = req.body.tokenData;
 
-  const userRole = await rolesMiddleware(req.body.tokenData);
+  const userControl = await securityMiddleware(userToken, id);
 
-  if(userRole === 'ADMIN') {
+  if((userControl === 1) || (userControl === 2)) {
     User.destroy({
       where: { id: id }
     })
@@ -222,7 +225,7 @@ async function deleteUser(req, res){
     })
     .catch(err => {
       res.status(500).send({
-        message: "Could not delete User with id n°" + id
+        message: err.message || "Could not delete User with id n°" + id
       });
     });
   } else {

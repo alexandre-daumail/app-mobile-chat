@@ -35,7 +35,7 @@ router.post('/user/:id/channel/:channel_id', authMiddleware, async (req, res) =>
   userService.userJoinChannel(req, res);
 });
 
-/* PRIVATE (ADMIN) : DELETE AN USER */
+/* PRIVATE (USER/ADMIN) : DELETE AN USER */
 router.delete('/user/:id', authMiddleware, async (req, res) => {
   userService.deleteUser(req, res);
 });

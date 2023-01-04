@@ -1,13 +1,9 @@
 module.exports = (sequelize, Sequelize) => {
-  const Channel = sequelize.define('Channel', {
+  const UserConversation = sequelize.define('UserConversation', {
     id: {
       type: Sequelize.INTEGER,
       autoIncrement: true,
       primaryKey: true
-    },
-    name: {
-      type: Sequelize.STRING,
-      allowNull: false
     },
     createdAt: {
       field: 'created_at',
@@ -19,11 +15,11 @@ module.exports = (sequelize, Sequelize) => {
       field: 'updated_at',
       type: "TIMESTAMP",
       defaultValue: sequelize.literal("CURRENT_TIMESTAMP"),
-      allowNull: false,
+      allowNull: true,
     },
   }, {
-    tableName: 'channel'
+    tableName: 'user_conversation'
   });
   
-  return Channel;
+  return UserConversation;
 };

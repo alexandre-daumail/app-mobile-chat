@@ -9,7 +9,8 @@ const sequelize = new Sequelize(
     host: dbConfig.HOST,
     dialect: dbConfig.dialect,
     operatorsAliases: false,
-    port: 8889,
+    port: 8889,     // MAMP
+    // port: 3306,     // WAMP
 
     pool: {
       max: dbConfig.pool.max,
@@ -28,9 +29,9 @@ db.sequelize = sequelize;
 db.user = require("./user.model.js")(sequelize, Sequelize);
 db.channel = require("./channel.model.js")(sequelize, Sequelize);
 db.userChannel = require("./userChannel.model.js")(sequelize, Sequelize);
-// db.account = require("./account.model.js")(sequelize, Sequelize);
-db.chanelMessage = require("./chanelMessage.model.js")(sequelize, Sequelize);
-db.privateMessage = require("./privateMessage.model.js")(sequelize, Sequelize);
+db.chanelMessage = require("./channelMessage.model.js")(sequelize, Sequelize);
+db.userConversation = require("./userConversation.model")(sequelize, Sequelize);
+db.conversationMessage = require("./conversationMessage.model.js")(sequelize, Sequelize);
 
 /* Channel ManyToMany User */
 db.user.belongsToMany(db.channel, { through: db.userChannel });
@@ -42,7 +43,7 @@ db.chanelMessage.belongsTo(db.user, {
   as: 'User'
 });
 
-/* Foreign key Group -> Channel messages */
+/* Foreign key Channel -> ChannelMessages */
 db.chanelMessage.belongsTo(db.channel, {
   foreignKey: 'channel_id', 
   as: 'Channel'
@@ -50,5 +51,28 @@ db.chanelMessage.belongsTo(db.channel, {
 db.channel.hasMany(db.chanelMessage, {
   foreignKey: 'channel_id'
 });
+
+db.userConversation.belongsTo(db.user, {
+  foreignKey: 'user_id_from', 
+  as: 'id_from'
+});
+db.userConversation.belongsTo(db.user, {
+  foreignKey: 'user_id_to',
+  as: 'id_to'
+});
+
+db.conversationMessage.belongsTo(db.user, {
+  foreignKey: 'user_id_from', 
+  as: 'id_from'
+});
+db.conversationMessage.belongsTo(db.user, {
+  foreignKey: 'user_id_to',
+  as: 'id_to'
+});
+db.conversationMessage.belongsTo(db.userConversation, {
+  foreignKey: 'conversation_id',
+  as: 'UserConversation'
+});
+
 
 module.exports = db;

@@ -14,7 +14,6 @@ router.get('/channel/users', async (req, res) => {
   channel.getAllUsersInChannel(req, res)
 });
 
-
 /* PRIVATE (ADMIN) : CREATE A GROUP */
 router.post('/channel', authMiddleware, async (req, res) => {
   channel.createChannel(req, res)
@@ -23,11 +22,6 @@ router.post('/channel', authMiddleware, async (req, res) => {
 /* PRIVATE (ADMIN) : UPDATE A GROUP */
 router.put('/channel/:id', authMiddleware, async (req, res) => {
   channel.updateChannel(req, res)
-});
-
-/* PRIVATE (ADMIN) : UPDATE USERS IN A GROUP */
-router.put('/channel/:id/users', authMiddleware, async (req, res) => {
-  channel.updateUsersInChannel(req, res)
 });
 
 /* PRIVATE (ADMIN) : DELETE A GROUP */
