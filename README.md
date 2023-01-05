@@ -26,7 +26,7 @@ npm start
       - channel.model.js : Channel entity
       - channelMessage.model.js : Channel Message entity
       - conversationMessage.model.js : Conversation Message entity
-      - index.js : contains Sequelize config and Entity associations (OneToOne, ManyToOne, OneToMany, ManyToMany)
+      - app.js : contains Sequelize config and Entity associations (OneToOne, ManyToOne, OneToMany, ManyToMany)
       - user.model.js : User entity
       - userChannel.model.js : User Channel entity
       - userConversation.model.js : User Conversation entity

@@ -8,9 +8,8 @@ const sequelize = new Sequelize(
   {
     host: dbConfig.HOST,
     dialect: dbConfig.dialect,
-    operatorsAliases: false,
-    port: 8889,     // MAMP
-    // port: 3306,     // WAMP
+    // port: 8889,     // MAMP
+    port: 3306,     // WAMP
 
     pool: {
       max: dbConfig.pool.max,

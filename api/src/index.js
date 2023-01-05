@@ -2,20 +2,10 @@ const userRouter = require('./router/userRouter');
 const channelRouter = require('./router/channelRouter');
 const channelMessageRouter = require('./router/channelMessageRouter')
 const conversationMessageRouter = require('./router/conversationMessageRouter')
-const port = 3000;
 
 const express = require('express');
 const app = express();
 
-const db = require('./models');
-
-db.sequelize.sync()
-.then(() => {
-  console.log('Synced db.');
-})
-.catch((err) => {
-  console.log('Error : ' + err.message);
-});
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json())
@@ -31,6 +21,4 @@ app.get('*', (req, res) => {
   })
 })
 
-app.listen(port, () => {
-  console.log(`Serveur à l'écoute sur le port ${port}`);
-})
+module.exports = app;

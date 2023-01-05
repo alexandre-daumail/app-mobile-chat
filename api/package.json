@@ -2,7 +2,7 @@
   "name": "api",
   "description": "An API with node.js",
   "version": "1.0.0",
-  "main": "src/index.js",
+  "main": "src/server.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/remi-lopez/app-mobile-chat.git"
@@ -30,8 +30,15 @@
   },
   "scripts": {
     "dev": "nodemon --watch src -e js,json --exec \"node src/index.js\"",
-    "build": "tsup src/index.js --format cjs --clean",
-    "start": "node src/index.js",
-    "test": "run tests"
+    "build": "tsup src/app.js --format cjs --clean",
+    "start": "node src/server.js",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "jest": "^29.3.1",
+    "superagent": "^8.0.6",
+    "supertest": "^6.3.3"
   }
 }
