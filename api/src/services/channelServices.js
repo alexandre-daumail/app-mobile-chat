@@ -139,21 +139,19 @@ async function updateChannel(req, res){
   const id = req.params.id;
   const channelId = req.params.channel_id;
 
-  const channel = await Channel.findByPk(channelId);
-
   const userToken = req.body.tokenData;
   const userControl = await securityMiddleware(userToken, id);
 
   if((userControl === 1) || (userControl === 2)) {
     Channel.update(req.body, {
-      where: { id: id }
+      where: { id: channelId }
     })
     .then(num => {
       if (num == 1) {
         res.status(200).send({
           status: 'Success',
           data: {
-            channel_id: channel.id,
+            channel_id: channelId,
             updated: req.body.name,
           }
         });
@@ -179,19 +177,151 @@ async function updateChannel(req, res){
 }
 
 
+/* PRIVATE : CREATOR CAN ADD USER IN HIS/HER CHANNEL */
+async function addUserChannel(req, res){  
+  const id = req.params.id;
+  const channelId = req.params.channel_id;
+  const userToAdd = req.params.id_to_add;
+
+  const userToken = req.body.tokenData;
+  const userControl = await securityMiddleware(userToken, id);
+
+  const userToAddInChannel = await UserChannel.findOne({ 
+    where: { 
+      UserId: userToAdd,
+      ChannelId: channelId,
+    }
+  })
+
+  if((userControl === 1) || (userControl === 2)) {
+    await Channel.findOne({
+      attributes: [
+        'id', 
+        'creator',
+      ],
+      where: {
+        id: channelId,
+      }
+    })
+    .then(channel => { 
+      if (channel.creator == id) {
+        UserChannel.create({
+          UserId: userToAdd,
+          ChannelId: channelId,
+        })
+        .then(userChannel => {
+          res.status(201).send({
+            status: 'Success',
+            data: userChannel,
+          })
+        })
+        .catch(err => {
+          res.status(500).send({
+            status: 'Error',
+            message: err.message,
+          });
+        });
+      } else {
+        res.status(500).send({
+          status: 'Error',
+          message: 'You doesn\'t have authorizations to add user in this channel',
+        });
+      }
+     })
+    .catch(err => {
+      res.status(500).send({
+        status: 'Error',
+        message: err.message,
+      });
+    });
+  } else {
+    res.status(500).send({
+      status: 'Error',
+      message: "You're not autorized to make this action",
+    });
+  }
+}
+
+
+/* PRIVATE : CREATOR CAN REMOVE USER IN HIS/HER CHANNEL */
+async function revokeUserChannel(req, res){
+  const id = req.params.id;
+  const channelId = req.params.channel_id;
+  const userToRemove = req.params.id_to_remove;
+
+  const userChannel = await UserChannel.findOne({
+    where: {
+      UserId: userToRemove,
+      ChannelId: channelId,
+    }
+  });
+
+  const userToken = req.body.tokenData;
+  const userControl = await securityMiddleware(userToken, id);
+
+  if((userControl === 1) || (userControl === 2)) {
+    let deleteMessages = await Messages.findAll({
+      where: { channel_id: channelId }
+    });
+    
+    const deleteMessagesIds = deleteMessages.map(el => el.id);
+    
+    await Messages.destroy({
+      where: {
+        [Op.and]: {
+          id: deleteMessagesIds,
+        },
+      },
+    });
+
+    UserChannel.destroy({ 
+      where: { 
+        UserId: userToRemove,
+        ChannelId: channelId,
+      } 
+    })
+    .then(num => {
+      if (num == 1) {
+        res.status(200).send({
+          status: 'Success',
+          data: {
+            user_id: id,
+            info: "User was deleted successfully from your channel!",
+          }
+        });
+      } else {
+        res.status(500).send({
+          status: 'Error',
+          message: "Cannot deletethis user from your channel. Please retry."
+        });
+      }
+    })
+    .catch(err => {
+      res.status(500).send({ 
+        status: 'Error',
+        message: err.message 
+      });
+    });
+  } else {
+    res.status(500).send({
+      status: 'Error',
+      message: "You're not autorized to delete this Channel",
+    });
+  }
+}
+
+
 /* PRIVATE : DELETE AN EXISTING CHANNEL */
 async function deleteChannel(req, res){
   const id = req.params.id;
   const channelId = req.params.channel_id;
 
-  const channel = await Channel.findByPk(channelId);
-
   const userToken = req.body.tokenData;
-  const userControl = await securityMiddleware(userToken, channel.creator);
+  const userControl = await securityMiddleware(userToken, id);
 
   if((userControl === 1) || (userControl === 2)) {
     let deleteMessages = await Messages.findAll({
-      where: { channel_id: channel.id }
+      where: { channel_id: channelId }
     });
     
     const deleteMessagesIds = deleteMessages.map(el => el.id);
@@ -205,7 +335,7 @@ async function deleteChannel(req, res){
     });
 
     Channel.destroy({ 
-      where: { id: id } 
+      where: { id: channelId } 
     })
     .then(num => {
       if (num == 1) {
@@ -244,5 +374,7 @@ module.exports = {
   getUserChannels,
   createChannel,
   updateChannel,
-  deleteChannel
+  addUserChannel,
+  revokeUserChannel,
+  deleteChannel,
 }
