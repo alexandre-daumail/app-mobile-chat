@@ -17,11 +17,13 @@ const authMiddleware = (req, res, next) => {
     } 
     catch(error) {
       res.status(401).send({
+        status: 'Error',
         message: 'You need to check your credentials'
       });
     }
   } else {
     res.status(404).send({
+      status: 'Error',
       message: 'No credentials'
     });
   }

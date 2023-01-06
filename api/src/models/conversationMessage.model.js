@@ -1,4 +1,7 @@
 module.exports = (sequelize, Sequelize) => {
+  User = require('./user.model')(sequelize, Sequelize);
+  UserConversation = require('./userConversation.model')(sequelize, Sequelize);
+
   const ConversationMessage = sequelize.define('ConversationMessage', {
     id: {
       type: Sequelize.INTEGER,
@@ -6,7 +9,7 @@ module.exports = (sequelize, Sequelize) => {
       primaryKey: true
     },
     message: {
-      type: Sequelize.STRING,
+      type: Sequelize.TEXT,
       allowNull: false
     },
     createdAt: {
@@ -17,6 +20,18 @@ module.exports = (sequelize, Sequelize) => {
     },
   }, {
     tableName: 'conversation_message'
+  });
+
+  ConversationMessage.belongsTo(User, {
+    foreignKey: 'user_id_from',
+    as: 'id_from',
+  });
+  ConversationMessage.belongsTo(User, {
+    foreignKey: 'user_id_to',
+    as: 'id_to',
+  });
+  ConversationMessage.belongsTo(UserConversation, {
+    foreignKey: 'conversation_id',
   });
   
   return ConversationMessage;

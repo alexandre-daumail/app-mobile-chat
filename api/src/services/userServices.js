@@ -9,28 +9,32 @@ const UserChannel = db.userChannel;
 require('dotenv').config()
 
 
-/* 
-  PUBLIC : 
-  USERS LIST 
-*/
+/* PUBLIC : USERS LIST */
 async function getAllUsers(req, res) {
-  return User.findAll({
-    attributes: ['firstname', 'lastname']
+  await User.findAll({
+    attributes: [
+      'id',
+      'username',
+      'firstname', 
+      'lastname',
+    ]
   })
   .then(users => {
-    res.json(users);
+    res.status(200).send({
+      status: 'Success',
+      data: users,
+    });
   })
   .catch(err => {
     res.status(500).send({
-      message: err.message || "Some error occurred while retrieving users."
+      status: 'Error',
+      message: err.message,
     });
   });
 };
 
-/* 
-  PUBLIC : 
-  REGISTER 
-*/
+
+/* PUBLIC : REGISTER */
 async function createUser(req, res){
   const hash_pwd = await bcrypt.hash(req.body.password, 12).then(hash => {
     return hash;
@@ -46,35 +50,47 @@ async function createUser(req, res){
 
   User.create(user)
   .then(user => {
-    res.send({
-      message: `User ${user.firstname} was created successfully.`
+    res.status(201).send({
+      status: 'Success',
+      data: {
+        id: user.id,
+        username: user.username,
+        firstname: user.firstname,
+        lastname: user.lastname,
+      }
     });
   })
   .catch(err => {
     res.status(500).send({
-      message: err.message || "Some error occurred while creating the User."
+      status: 'Error',
+      message: err.message,
     });
   });
 }
 
-/* 
-  PUBLIC : 
-  LOGIN 
-*/
+
+/* PUBLIC : LOGIN */
 async function getJwt(req, res){
-  const thisUser = await User.findOne({ where: { 
+  const user = await User.findOne({ where: { 
     email: req.body.email
   }})
 
   try {
-    if(thisUser) {
-      await bcrypt.compare(req.body.password, thisUser.password)
-      .then(result => {
-        if(result == true) {
-          const token = generateToken(thisUser);
-          res.json({ access_token: token })
+    if(user) {
+      await bcrypt.compare(req.body.password, user.password)
+      .then(jwt => {
+        if(jwt == true) {
+          const token = generateToken(user);
+          res.status(201).send({
+            status: 'Success',
+            data: {
+              user_id: user.id,
+              access_token: token,
+            }
+          })
         } else {
           res.status(404).send({
+            status: 'Error',
             message: 'Error. Wrong login or password'
           });
         }
@@ -83,16 +99,14 @@ async function getJwt(req, res){
   }
   catch(err) {
     res.status(500).send({
-      message: 'Error. Please retry in few minutes'
+      status: 'Error',
+      message: err.message,
     });
   }
 }
 
 
-/* 
-  PRIVATE (USER/ADMIN) : 
-  USER INFORMATION 
-*/
+/* PRIVATE : USER INFORMATION */
 async function getOneUser(req, res){
   const id = req.params.id;
   const userToken = req.body.tokenData;
@@ -101,33 +115,44 @@ async function getOneUser(req, res){
 
   if((userControl === 1) || (userControl === 2)) {
     User.findByPk(id, {
-      attributes: ['username', 'email', 'firstname', 'lastname'],
+      attributes: [
+        'id',
+        'username',
+        'firstname', 
+        'lastname',
+        'email',
+        'created_at'
+      ],
     })
     .then(user => {
       if (user) {
-        res.send(user);
+        res.status(200).send({
+          status: 'Success',
+          data: user,
+        });
       } else {
         res.status(404).send({
+          status: 'Error',
           message: `Cannot find User with id n°${id}.`
         });
       }
     })
     .catch(err => {
       res.status(500).send({
-        message: err.message || "Error retrieving User with id n°" + id
+        status: 'Error',
+        message: err.message,
       });
     });
   } else {
     res.status(500).send({
-      message: "You're not autorized to see user informations"
+      status: 'Error',
+      message: "You're not autorized to see user informations",
     });
   }
 }
 
-/* 
-  PRIVATE (USER) : 
-  JOIN A GROUP 
-*/
+
+/* PRIVATE : JOIN A GROUP */
 async function userJoinChannel(req, res){  
   const id = req.params.id;
   const channelId = req.params.channel_id;
@@ -142,28 +167,28 @@ async function userJoinChannel(req, res){
     };
   
     UserChannel.create(joinChannel)
-    .then(user => {
-      res.send({
-        message: `User successfully joined a channel.`
-      });
+    .then(userChannel => {
+      res.status(201).send({
+        status: 'Success',
+        data: userChannel,
+      })
     })
     .catch(err => {
       res.status(500).send({
-        message: err.message || "Some error occurred. Please retry."
+        status: 'Error',
+        message: err.message,
       });
     });
   } else {
     res.status(500).send({
-      message: "You're not autorized to make this action"
+      status: 'Error',
+      message: "You're not autorized to make this action",
     });
   }
 }
 
 
-/* 
-  PRIVATE (USER/ADMIN) : 
-  UPDATE AN USER
-*/
+/* PRIVATE : UPDATE AN USER */
 async function updateUser(req, res){
   const id = req.params.id;
   const userToken = req.body.tokenData;
@@ -176,32 +201,36 @@ async function updateUser(req, res){
     })
     .then(num => {
       if (num == 1) {
-        res.send({
-          message: "User was updated successfully."
+        res.status(200).send({
+          status: 'Success',
+          data: {
+            user_id: id,
+            updated: req.body,
+          }
         });
       } else {
-        res.send({
-          message: `Cannot update User with id n°${id}. Maybe User was not found or req.body is empty!`
+        res.status(500).send({
+          status: 'Error',
+          message: "Cannot update user. Please retry."
         });
       }
     })
     .catch(err => {
       res.status(500).send({
-        message: err.message || "Error updating User with id n°" + id
+        status: 'Error',
+        message: err.message,
       });
     });
   } else {
     res.status(500).send({
-      message: "You're not autorized to update user informations"
+      status: 'Error',
+      message: "You're not autorized to update user informations",
     });
   }
 }
 
 
-/* 
-  PRIVATE (ADMIN) : 
-  DELETE AN USER 
-*/
+/* PRIVATE : DELETE AN USER */
 async function deleteUser(req, res){
   const id = req.params.id;
   const userToken = req.body.tokenData;
@@ -214,23 +243,30 @@ async function deleteUser(req, res){
     })
     .then(num => {
       if (num == 1) {
-        res.send({
-          message: "User was deleted successfully!"
+        res.status(200).send({
+          status: 'Success',
+          data: {
+            user_id: id,
+            info: "User was deleted successfully!",
+          }
         });
       } else {
-        res.send({
+        res.status(500).send({
+          status: 'Error',
           message: `Cannot delete User with id n°${id}. Maybe User was not found!`
         });
       }
     })
     .catch(err => {
       res.status(500).send({
-        message: err.message || "Could not delete User with id n°" + id
+        status: 'Error',
+        message: err.message,
       });
     });
   } else {
     res.status(500).send({
-      message: "You're not autorized to delete user informations"
+      status: 'Error',
+      message: "You're not autorized to delete user informations",
     });
   }
 }

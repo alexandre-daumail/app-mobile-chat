@@ -1,4 +1,6 @@
 module.exports = (sequelize, Sequelize) => {
+  User = require('./user.model')(sequelize, Sequelize);
+
   const UserConversation = sequelize.define('UserConversation', {
     id: {
       type: Sequelize.INTEGER,
@@ -19,6 +21,15 @@ module.exports = (sequelize, Sequelize) => {
     },
   }, {
     tableName: 'user_conversation'
+  });
+
+  UserConversation.belongsTo(User, {
+    foreignKey: 'user_id_to',
+    as: 'id_from',
+  });
+  UserConversation.belongsTo(User, {
+    foreignKey: 'user_id_from', 
+    as: 'id_to',
   });
   
   return UserConversation;

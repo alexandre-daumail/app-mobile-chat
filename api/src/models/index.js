@@ -1,5 +1,6 @@
 const dbConfig = require("../config");
 const Sequelize = require("sequelize");
+const { LoadDefaultData } = require('../fixtures/defaultData');
 
 const sequelize = new Sequelize(
   dbConfig.DB, 
@@ -8,7 +9,7 @@ const sequelize = new Sequelize(
   {
     host: dbConfig.HOST,
     dialect: dbConfig.dialect,
-    operatorsAliases: false,
+    operatorsAliases: 0,
     port: 8889,     // MAMP
     // port: 3306,     // WAMP
 
@@ -29,7 +30,7 @@ db.sequelize = sequelize;
 db.user = require("./user.model.js")(sequelize, Sequelize);
 db.channel = require("./channel.model.js")(sequelize, Sequelize);
 db.userChannel = require("./userChannel.model.js")(sequelize, Sequelize);
-db.chanelMessage = require("./channelMessage.model.js")(sequelize, Sequelize);
+db.channelMessage = require("./channelMessage.model.js")(sequelize, Sequelize);
 db.userConversation = require("./userConversation.model")(sequelize, Sequelize);
 db.conversationMessage = require("./conversationMessage.model.js")(sequelize, Sequelize);
 
@@ -37,42 +38,10 @@ db.conversationMessage = require("./conversationMessage.model.js")(sequelize, Se
 db.user.belongsToMany(db.channel, { through: db.userChannel });
 db.channel.belongsToMany(db.user, { through: db.userChannel });
 
-/* Foreign key ChannelMessage -> User */
-db.chanelMessage.belongsTo(db.user, {
-  foreignKey: 'user_id', 
-  as: 'User'
-});
-
-/* Foreign key Channel -> ChannelMessages */
-db.chanelMessage.belongsTo(db.channel, {
-  foreignKey: 'channel_id', 
-  as: 'Channel'
-});
-db.channel.hasMany(db.chanelMessage, {
+db.channel.hasMany(db.channelMessage, {
   foreignKey: 'channel_id'
 });
 
-db.userConversation.belongsTo(db.user, {
-  foreignKey: 'user_id_from', 
-  as: 'id_from'
-});
-db.userConversation.belongsTo(db.user, {
-  foreignKey: 'user_id_to',
-  as: 'id_to'
-});
-
-db.conversationMessage.belongsTo(db.user, {
-  foreignKey: 'user_id_from', 
-  as: 'id_from'
-});
-db.conversationMessage.belongsTo(db.user, {
-  foreignKey: 'user_id_to',
-  as: 'id_to'
-});
-db.conversationMessage.belongsTo(db.userConversation, {
-  foreignKey: 'conversation_id',
-  as: 'UserConversation'
-});
-
+// LoadDefaultData(db);
 
 module.exports = db;

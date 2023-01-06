@@ -3,59 +3,101 @@ const { securityMiddleware } = require("../middlewares/securityMiddleware");
 const db = require("../models");
 const Channel = db.channel;
 const UserChannel = db.userChannel
+const Messages = db.channelMessage
+const { Op } = require("sequelize");
 
 
-/* 
-  PUBLIC : 
-  CHANNELS LIST 
-*/
+/* PUBLIC : CHANNELS LIST */
 async function getAllChannel(req, res){
-  return Channel.findAll({
-    attributes: ['name', 'private']
-  })
-  .then(groups => {
-    res.json(groups);
-  })
-  .catch(err => {
-    res.status(500).send({
-      message: err.message || "Some error occurred while retrieving Channel list."
-    });
-  });
-}
-
-
-/* 
-  PUBLIC : 
-  CHANNELS LIST WITH USERS
-*/
-async function getAllUsersInChannel(req, res){
   await Channel.findAll({
-    attributes: ['name', 'private'],
-    include: [
-      { 
-        model: db.user, 
-        attributes: ['firstname', 'lastname']
-      }
-    ]
+    attributes: [
+      'id', 
+      'name',
+      'creator',
+      'private',
+    ],
   })
-  .then(channel => {
-    res.json(channel);
+  .then(channels => {
+    res.status(200).send({
+      status: 'Success',
+      data: channels,
+    });
   })
   .catch(err => {
-    res.status(500).send({
-      message: err.message || "Some error occurred while retrieving this Channel."
+    res.status(500).send({ 
+      status: 'Error',
+      message: err.message 
     });
   });
 }
 
 
-/* 
-  PRIVATE (ADMIN) : 
-  CREATE A NEW CHANNEL 
-*/
-async function createChannel(req, res){
+/* PUBLIC : CHANNELS LIST WITH USERS */
+async function getAllUsersInChannel(req, res){
+  id = req.params.id;
+
+  await UserChannel.findAll({
+    attributes: ['id', 'created_at'],
+    where: { ChannelId: id }
+  })
+  .then(channelAndUsers => { 
+    res.status(200).send({
+      status: 'Success',
+      data: channelAndUsers,
+    });
+  })
+  .catch(err => {
+    res.status(500).send({ 
+      status: 'Error',
+      message: err.message 
+    });
+  });
+}
+
+/* PRIVATE : GET USER CHANNEL */
+async function getUserChannels(req, res){
+  const id = req.params.id;
+
   const userToken = req.body.tokenData;
-  const userControl = await securityMiddleware(userToken, userToken.id)
+  const userControl = await securityMiddleware(userToken, id)
+
+  if((userControl === 1) || (userControl === 2)) {
+    await Channel.findAll({
+      attributes: [
+        'id', 
+        'name',
+        'creator',
+        'private',
+      ],
+      where: { creator: id }
+    })
+    .then(channels => {
+      res.status(200).send({
+        status: 'Success',
+        data: channels,
+      });
+    })
+    .catch(err => {
+      res.status(500).send({ 
+        status: 'Error',
+        message: err.message 
+      });
+    });
+  } else {
+    res.status(500).send({
+      status: 'Error',
+      message: "You're not autorized",
+    });
+  }
+}
+
+
+/* PRIVATE : CREATE A NEW CHANNEL */
+async function createChannel(req, res){
+  const id = req.params.id;
+
+  const userToken = req.body.tokenData;
+  const userControl = await securityMiddleware(userToken, id)
 
   const channel = {
     name: req.body.name,
@@ -65,40 +107,42 @@ async function createChannel(req, res){
 
   if((userControl === 1) || (userControl === 2)) {
     Channel.create(channel)
-    .then(data => {
+    .then(channel => {
       const joinChannel = {
-        UserId: data.creator,
-        ChannelId: data.id,
+        UserId: channel.creator,
+        ChannelId: channel.id,
       };
       UserChannel.create(joinChannel)
 
-      res.send({
-        message: `Channel "${data.name}" was created successfully.`
+      res.status(200).send({
+        status: 'Success',
+        data: channel,
       });
     })
     .catch(err => {
-      res.status(500).send({
-        message: err.message || "Error while creating this Channel. Please retry."
+      res.status(500).send({ 
+        status: 'Error',
+        message: err.message 
       });
     });
   } else {
     res.status(500).send({
-      message: "You're not autorized to create a Channel"
+      status: 'Error',
+      message: "You're not autorized to create a Channel",
     });
   }
 }
 
 
-/* 
-  PRIVATE (ADMIN) : 
-  UPDATE AN EXISTING CHANNEL
-*/
+/* PRIVATE : UPDATE AN EXISTING CHANNEL */
 async function updateChannel(req, res){
   const id = req.params.id;
-  const userToken = req.body.tokenData;
+  const channelId = req.params.channel_id;
 
-  const channel = await Channel.findByPk(id);
-  const userControl = await securityMiddleware(userToken, channel.creator);
+  const channel = await Channel.findByPk(channelId);
+
+  const userToken = req.body.tokenData;
+  const userControl = await securityMiddleware(userToken, id);
 
   if((userControl === 1) || (userControl === 2)) {
     Channel.update(req.body, {
@@ -106,62 +150,89 @@ async function updateChannel(req, res){
     })
     .then(num => {
       if (num == 1) {
-        res.send({
-          message: "Channel name was updated successfully."
+        res.status(200).send({
+          status: 'Success',
+          data: {
+            channel_id: channel.id,
+            updated: req.body.name,
+          }
         });
       } else {
-        res.send({
-          message: `Cannot update Channel name with id n°${id}.`
+        res.status(500).send({
+          status: 'Error',
+          message: "Cannot update channel. Please retry."
         });
       }
     })
     .catch(err => {
-      res.status(500).send({
-        message: err.message || "Error while updating this Channel. Please retry."
+      res.status(500).send({ 
+        status: 'Error',
+        message: err.message 
       });
     });
   } else {
     res.status(500).send({
-      message: "You're not autorized to update this Channel"
+      status: 'Error',
+      message: "You're not autorized to update this Channel",
     });
   }
 }
 
 
-/* 
-  PRIVATE (ADMIN) : 
-  DELETE AN EXISTING CHANNEL
-*/
+/* PRIVATE : DELETE AN EXISTING CHANNEL */
 async function deleteChannel(req, res){
   const id = req.params.id;
-  const userToken = req.body.tokenData;
+  const channelId = req.params.channel_id;
 
-  const channel = await Channel.findByPk(id);
+  const channel = await Channel.findByPk(channelId);
+
+  const userToken = req.body.tokenData;
   const userControl = await securityMiddleware(userToken, channel.creator);
 
   if((userControl === 1) || (userControl === 2)) {
-    Channel.destroy({
-      where: { id: id }
+    let deleteMessages = await Messages.findAll({
+      where: { channel_id: channel.id }
+    });
+    
+    const deleteMessagesIds = deleteMessages.map(el => el.id);
+    
+    await Messages.destroy({
+      where: {
+        [Op.and]: {
+          id: deleteMessagesIds,
+        },
+      },
+    });
+
+    Channel.destroy({ 
+      where: { id: id } 
     })
     .then(num => {
       if (num == 1) {
-        res.send({
-          message: "Channel was deleted successfully!"
+        res.status(200).send({
+          status: 'Success',
+          data: {
+            user_id: id,
+            info: "Channel was deleted successfully!",
+          }
         });
       } else {
-        res.send({
-          message: `Cannot delete Channel with id n°${id}`
+        res.status(500).send({
+          status: 'Error',
+          message: "Cannot delete channel. Please retry."
         });
       }
     })
     .catch(err => {
-      res.status(500).send({
-        message: err.message || "Error while deleting this Channel. Please retry."
+      res.status(500).send({ 
+        status: 'Error',
+        message: err.message 
       });
     });
   } else {
     res.status(500).send({
-      message: "You're not autorized to delete this Channel"
+      status: 'Error',
+      message: "You're not autorized to delete this Channel",
     });
   }
 }
@@ -170,6 +241,7 @@ async function deleteChannel(req, res){
 module.exports = {
   getAllChannel,
   getAllUsersInChannel,
+  getUserChannels,
   createChannel,
   updateChannel,
   deleteChannel

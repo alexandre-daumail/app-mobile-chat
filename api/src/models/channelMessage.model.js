@@ -1,12 +1,15 @@
 module.exports = (sequelize, Sequelize) => {
-  const ChanelMessage = sequelize.define('ChanelMessage', {
+  User = require('./user.model')(sequelize, Sequelize);
+  Channel = require('./channel.model')(sequelize, Sequelize);
+
+  const ChannelMessage = sequelize.define('ChannelMessage', {
     id: {
       type: Sequelize.INTEGER,
       autoIncrement: true,
       primaryKey: true
     },
     message: {
-      type: Sequelize.STRING,
+      type: Sequelize.TEXT,
       allowNull: false
     },
     createdAt: {
@@ -22,8 +25,16 @@ module.exports = (sequelize, Sequelize) => {
       allowNull: false,
     },
   }, {
-    tableName: 'chanel_message'
+    tableName: 'channel_message'
+  });
+
+  ChannelMessage.belongsTo(User, {
+    foreignKey: 'user_id', 
   });
   
-  return ChanelMessage;
+  ChannelMessage.belongsTo(Channel, {
+    foreignKey: 'channel_id',
+  });
+  
+  return ChannelMessage;
 };

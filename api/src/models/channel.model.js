@@ -15,7 +15,8 @@ module.exports = (sequelize, Sequelize) => {
     },
     private: {
       type: Sequelize.BOOLEAN,
-      allowNull: false
+      allowNull: false,
+      defaultValue: false,
     },
     createdAt: {
       field: 'created_at',
