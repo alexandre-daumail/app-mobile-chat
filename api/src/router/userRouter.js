@@ -6,23 +6,23 @@ const user = require('../services/userServices');
 
 
 /* PUBLIC : USERS LIST */
-router.get('/users', async (req, res) => {
+router.get('/api/users', async (req, res) => {
   user.getAllUsers(req, res);
 });
 
 /* PUBLIC : REGISTER */
-router.post('/register', async (req, res) => {
+router.post('/api/register', async (req, res) => {
   user.createUser(req, res);
 });
 
 /* PUBLIC : LOGIN */
-router.post('/login', async (req, res) => {
+router.post('/api/login', async (req, res) => {
   user.getJwt(req, res);
 })
 
 /* PRIVATE : USER INFORMATION */
 router.get(
-  '/user/:id', 
+  '/api/user/:id',
   authMiddleware, 
   async (req, res) => {
     user.getOneUser(req, res);
@@ -31,7 +31,7 @@ router.get(
 
 /* PRIVATE : UPDATE AN USER */
 router.put(
-  '/user/:id', 
+  '/api/user/:id',
   authMiddleware, 
   async (req, res) => {
     user.updateUser(req, res);
@@ -39,14 +39,14 @@ router.put(
 );
 
 /* PRIVATE : JOIN A CHANNEL */
-router.post('/user/:id/channel/:channel_id', authMiddleware, async (req, res) => {
+router.post('/api/user/:id/channel/:channel_id', authMiddleware, async (req, res) => {
   user.userJoinChannel(req, res);
 }
 );
 
 /* PRIVATE : DELETE AN USER */
 router.delete(
-  '/user/:id', 
+  '/api/user/:id',
   authMiddleware, 
   async (req, res) => {
     user.deleteUser(req, res);

@@ -38,8 +38,8 @@ app.use(cors({
     if(!origin) return callback(null, true);
 
     if(allowedOrigins.indexOf(origin) === -1){
-      var msg = 'The CORS policy for this site does not ' +
-                'allow access from the specified Origin.';
+      const msg = 'The CORS policy for this site does not ' +
+          'allow access from the specified Origin.';
       return callback(new Error(msg), false);
     }
     return callback(null, true);
@@ -56,9 +56,9 @@ app.use(channelMessageRouter);
 app.use(conversationRouter);
 app.use(conversationMessageRouter);
 
-app.get('*', (req, res) => {
-  return res.status(404).json({ 
-    message: 'Page not found. You can try the followings: /users ; /channel ; /channel/users ; /register ; /login' 
+app.get('/api', (req, res) => {
+  return res.status(200).json({
+    message: 'welcome to the API. You can try the followings: /users ; /channel ; /channel/users ; /register ; /login'
   })
 })
 

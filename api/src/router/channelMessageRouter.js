@@ -7,7 +7,7 @@ const channelMessages = require('../services/channelMessageServices');
 
 /* PUBLIC : CHANNEL MESSAGES LIST */
 router.get(
-  '/channel/:id', 
+  '/api/channel/:id',
   async (req, res) => {
     channelMessages.getAllMessages(req, res)
   }
@@ -15,7 +15,7 @@ router.get(
 
 /* PRIVATE : CREATE MESSAGE IN CHANNEL */
 router.post(
-  '/user/:id/channel/:channel_id/message', 
+  '/api/user/:id/channel/:channel_id/message',
   authMiddleware, 
   async (req, res) => {
     channelMessages.createMessage(req, res)
@@ -24,7 +24,7 @@ router.post(
 
 /* PRIVATE : UPDATE MESSAGE IN CHANNEL */
 router.put(
-  '/user/:id/channel/:channel_id/message/:message_id', 
+  '/api/user/:id/channel/:channel_id/message/:message_id',
   authMiddleware, 
   async (req, res) => {
     channelMessages.updateMessage(req, res)
@@ -33,7 +33,7 @@ router.put(
 
 /* PRIVATE : DELETE A MESSAGE IN CHANNEL */
 router.delete(
-  '/user/:id/channel/:channel_id/message/:message_id', 
+  '/api/user/:id/channel/:channel_id/message/:message_id',
   authMiddleware, 
   async (req, res) => {
     channelMessages.deleteMessage(req, res)

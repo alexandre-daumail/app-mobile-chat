@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/remi-lopez/app-mobile-chat.git"
+    "url": "git+https://github.com/alexandre-daumail/app-mobile-chat.git"
   },
   "keywords": [
     "API",
@@ -16,9 +16,9 @@
   "author": "Rémi LOPEZ",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/remi-lopez/app-mobile-chat/issues"
+    "url": "https://github.com/alexandre-daumail/app-mobile-chat/issues"
   },
-  "homepage": "https://github.com/remi-lopez/app-mobile-chat#readme",
+  "homepage": "https://github.com/alexandre-daumail/app-mobile-chat#readme",
   "dependencies": {
     "bcrypt": "^5.1.0",
     "cors": "^2.8.5",

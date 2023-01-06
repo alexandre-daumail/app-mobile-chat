@@ -6,7 +6,7 @@ const conversationMessage = require('../services/conversationMessageServices');
 
 /* PRIVATE : GET ALL MESSAGES IN A PRIVATE CONVERSATION */
 router.get(
-  '/user/:id/conversation/:conversation_id', 
+  '/api/user/:id/conversation/:conversation_id',
   authMiddleware, 
   async (req, res) => {
     conversation.getAllMessages(req, res)
@@ -15,7 +15,7 @@ router.get(
 
 /* PRIVATE : CREATE MESSAGE IN A PRIVATE CONVERSATION */
 router.post(
-  '/user/:id/conversation/:conversation_id/message', 
+  '/api/user/:id/conversation/:conversation_id/message',
   authMiddleware, 
   async (req, res) => {
     conversationMessage.createMessage(req, res)
@@ -24,7 +24,7 @@ router.post(
 
 /* PRIVATE : UPDATE MESSAGE IN A PRIVATE CONVERSATION */
 router.put(
-  '/user/:id/conversation/:conversation_id/message/:message_id', 
+  '/api/user/:id/conversation/:conversation_id/message/:message_id',
   authMiddleware, 
   async (req, res) => {
     conversationMessage.updateMessage(req, res)
@@ -33,7 +33,7 @@ router.put(
 
 /* PRIVATE : DELETE A MESSAGE IN A PRIVATE CONVERSATION */
 router.delete(
-  '/user/:id/conversation/:conversation_id/message/:message_id', 
+  '/api/user/:id/conversation/:conversation_id/message/:message_id',
   authMiddleware, 
   async (req, res) => {
     conversationMessage.deleteMessage(req, res)

@@ -7,7 +7,7 @@ const channel = require('../services/channelServices');
 
 /* PUBLIC : CHANNELS LIST */
 router.get(
-  '/channel', 
+  '/api/channels',
   async (req, res) => {
     channel.getAllChannel(req, res)
   }
@@ -15,7 +15,7 @@ router.get(
 
 /* PUBLIC : USERS LIST IN A CHANNEL */
 router.get(
-  '/channel/:id/users', 
+  '/api/channel/:id/users',
   async (req, res) => {
     channel.getAllUsersInChannel(req, res)
   }
@@ -23,7 +23,7 @@ router.get(
 
 /* PRIVATE : GET USER CHANNELS */
 router.get(
-  '/user/:id/channel', 
+  '/api/user/:id/channel',
   authMiddleware, 
   async (req, res) => {
     channel.createChannel(req, res)
@@ -32,7 +32,7 @@ router.get(
 
 /* PRIVATE : CREATE A CHANNEL */
 router.post(
-  '/user/:id/channel', 
+  '/api/user/:id/channel',
   authMiddleware, 
   async (req, res) => {
     channel.createChannel(req, res)
@@ -41,7 +41,7 @@ router.post(
 
 /* PRIVATE : UPDATE A CHANNEL */
 router.put(
-  '/user/:id/channel/:channel_id', 
+  '/api/user/:id/channel/:channel_id',
   authMiddleware, 
   async (req, res) => {
     channel.updateChannel(req, res)
@@ -50,7 +50,7 @@ router.put(
 
 /* PRIVATE : DELETE A CHANNEL */
 router.delete(
-  '/user/:id/channel/:channel_id', 
+  '/api/user/:id/channel/:channel_id',
   authMiddleware, 
   async (req, res) => {
     channel.deleteChannel(req, res)
