@@ -26,7 +26,7 @@ router.get(
   '/api/user/:id/channel', 
   authMiddleware, 
   async (req, res) => {
-    channel.createChannel(req, res)
+    channel.getUserChannels(req, res)
   }
 );
 
