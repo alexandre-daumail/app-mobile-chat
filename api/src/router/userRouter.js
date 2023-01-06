@@ -39,8 +39,8 @@ router.put(
 );
 
 /* PRIVATE : JOIN A CHANNEL */
-router.post('
-  /api/user/:id/channel/:channel_id', 
+router.post(
+  '/api/user/:id/channel/:channel_id', 
   authMiddleware, 
   async (req, res) => {
     user.userJoinChannel(req, res);
