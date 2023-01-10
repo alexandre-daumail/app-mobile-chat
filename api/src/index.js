@@ -11,6 +11,7 @@ const app = express();
 
 const db = require('./models');
 
+
 /** SOCKET.IO */
 const http = require('http');
 const server = http.createServer(app);
@@ -24,17 +25,24 @@ io.on('connection', (socket) => {
   });
 });
 
+
 /** DATABASE SYNCHRONISATION */
 db.sequelize.sync()
 .then(() => { console.log('Synced db.') })
 .catch((err) => { console.log('Error : ' + err.message) });
 
+
 /** CORS ORIGIN */
-const allowedOrigins = [`http://localhost:${port}`, 'http://yourapp.com'];
+const allowedOrigins = [
+  `http://localhost:${port}`, 
+  'http://localhost:19006',
+  'http://127.0.0.1:19006',
+];
 
 app.use(cors({
   origin: function(origin, callback){
     // allow requests with no origin (like mobile apps or curl requests)
+    console.log(origin)
     if(!origin) return callback(null, true);
 
     if(allowedOrigins.indexOf(origin) === -1){
@@ -45,6 +53,7 @@ app.use(cors({
     return callback(null, true);
   }
 }));
+
 
 /** API */
 app.use(express.urlencoded({ extended: false }));

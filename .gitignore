@@ -2,4 +2,5 @@
 .git
 api/node_modules
 api/coverage
-api/.env
+.env
+.DS_Store
