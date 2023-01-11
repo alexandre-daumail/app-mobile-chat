@@ -36,16 +36,8 @@ jobs:
       - name: Install dependencies
         run: cd api && npm install
 
-      - name: Start MySQL
-        services:
-          mysql:
-            image: mysql:8.0
-            env:
-              MYSQL_ROOT_PASSWORD: password
-
       - name: Wait for MySQL
         run: |
-          # Wait for MySQL to start
           while ! mysql -h localhost -P 3306 -u root -ppassword -e "SELECT 1"; do sleep 1; done
 
       - name: Run tests
