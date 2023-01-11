@@ -15,7 +15,7 @@ router.get(
 
 /* PUBLIC : USERS LIST IN A CHANNEL */
 router.get(
-  '/api/channel/:id/users',
+  '/api/channel/:id/users', 
   async (req, res) => {
     channel.getAllUsersInChannel(req, res)
   }
@@ -23,16 +23,16 @@ router.get(
 
 /* PRIVATE : GET USER CHANNELS */
 router.get(
-  '/api/user/:id/channel',
+  '/api/user/:id/channel', 
   authMiddleware, 
   async (req, res) => {
-    channel.createChannel(req, res)
+    channel.getUserChannels(req, res)
   }
 );
 
 /* PRIVATE : CREATE A CHANNEL */
 router.post(
-  '/api/user/:id/channel',
+  '/api/user/:id/channel', 
   authMiddleware, 
   async (req, res) => {
     channel.createChannel(req, res)
@@ -41,7 +41,7 @@ router.post(
 
 /* PRIVATE : UPDATE A CHANNEL */
 router.put(
-  '/api/user/:id/channel/:channel_id',
+  '/api/user/:id/channel/:channel_id', 
   authMiddleware, 
   async (req, res) => {
     channel.updateChannel(req, res)
@@ -50,7 +50,7 @@ router.put(
 
 /* PRIVATE : DELETE A CHANNEL */
 router.delete(
-  '/api/user/:id/channel/:channel_id',
+  '/api/user/:id/channel/:channel_id', 
   authMiddleware, 
   async (req, res) => {
     channel.deleteChannel(req, res)
@@ -59,22 +59,22 @@ router.delete(
 
 
 /* PRIVATE : CREATOR ADD USER IN A CHANNEL */
-// router.post(
-//   '/user/:id/channel/:channel_id/add/:id_to_add', 
-//   authMiddleware, 
-//   async (req, res) => {
-//     channel.addUserChannel(req, res)
-//   }
-// );
+router.post(
+  '/api/user/:id/channel/:channel_id/add/:id_to_add', 
+  authMiddleware, 
+  async (req, res) => {
+    channel.addUserChannel(req, res)
+  }
+);
 
 /* PRIVATE : CREATOR REMOVE USER IN A CHANNEL */
-// router.delete(
-//   '/user/:id/channel/:channel_id/remove/:id_to_remove', 
-//   authMiddleware, 
-//   async (req, res) => {
-//     channel.removeUserChannel(req, res)
-//   }
-// );
+router.delete(
+  '/api/user/:id/channel/:channel_id/remove/:id_to_remove', 
+  authMiddleware, 
+  async (req, res) => {
+    channel.revokeUserChannel(req, res)
+  }
+);
 
 
 module.exports = router;

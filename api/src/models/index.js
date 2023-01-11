@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 const dbConfig = require("../config");
 const Sequelize = require("sequelize");
 const { LoadDefaultData } = require('../fixtures/defaultData');
@@ -10,8 +12,7 @@ const sequelize = new Sequelize(
     host: dbConfig.HOST,
     dialect: dbConfig.dialect,
     operatorsAliases: 0,
-    //port: 8889,     // MAMP
-    port: 3306,     // WAMP
+    port: process.env.MYSQL_PORT,
 
     pool: {
       max: dbConfig.pool.max,
@@ -41,6 +42,7 @@ db.channel.belongsToMany(db.user, { through: db.userChannel });
 db.channel.hasMany(db.channelMessage, {
   foreignKey: 'channel_id'
 });
+
 //LoadDefaultData(db);
 
 module.exports = db;

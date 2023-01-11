@@ -9,6 +9,7 @@ const express = require('express');
 const cors = require('cors')
 const app = express();
 
+const db = require('./models');
 
 /** SOCKET.IO */
 const http = require('http');
@@ -24,8 +25,13 @@ io.on('connection', (socket) => {
 });
 
 
+
 /** CORS ORIGIN */
-const allowedOrigins = [`http://localhost:${port}`];
+const allowedOrigins = [
+  `http://localhost:${port}`,
+  'http://localhost:19006',
+  'http://127.0.0.1:19006',
+];
 
 app.use(cors({
   origin: function(origin, callback){
