@@ -9,7 +9,7 @@ const channel = require('../services/channelServices');
 router.get(
   '/api/channels',
   async (req, res) => {
-    channel.getAllChannel(req, res)
+    await channel.getAllChannel(req, res)
   }
 );
 

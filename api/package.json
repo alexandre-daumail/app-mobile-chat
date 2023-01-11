@@ -2,7 +2,7 @@
   "name": "api",
   "description": "An API with node.js",
   "version": "1.0.0",
-  "main": "src/index.js",
+  "main": "src/server.js.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/alexandre-daumail/app-mobile-chat.git"
@@ -32,9 +32,12 @@
     "socket.io": "^4.5.4"
   },
   "scripts": {
-    "dev": "nodemon --watch src -e js,json --exec \"node src/index.js\"",
-    "build": "tsup src/index.js --format cjs --clean",
-    "start": "node src/index.js",
+    "dev": "nodemon --watch src -e js,json --exec \"node src/server.js\"",
+    "build": "tsup src/server.js --format cjs --clean",
+    "start": "node src/server.js",
     "test": "jest"
+  },
+  "devDependencies": {
+    "supertest": "^6.3.3"
   }
 }
