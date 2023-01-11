@@ -28,9 +28,7 @@ jobs:
           node-version: 16.17.x
 
       - name: Install dependencies
-
-        run: cd api
-          npm install
+        run: npm install
 
       - name: Run tests
         run: npm test
