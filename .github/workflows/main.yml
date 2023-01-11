@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      working_dir: /api
+      working_dir: /api/src
 
     steps:
       - uses: actions/checkout@v3
