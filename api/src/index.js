@@ -9,7 +9,6 @@ const express = require('express');
 const cors = require('cors')
 const app = express();
 
-const db = require('./models');
 
 /** SOCKET.IO */
 const http = require('http');
@@ -24,13 +23,9 @@ io.on('connection', (socket) => {
   });
 });
 
-/** DATABASE SYNCHRONISATION */
-db.sequelize.sync()
-.then(() => { console.log('Synced db.') })
-.catch((err) => { console.log('Error : ' + err.message) });
 
 /** CORS ORIGIN */
-const allowedOrigins = [`http://localhost:${port}`, 'http://yourapp.com'];
+const allowedOrigins = [`http://localhost:${port}`];
 
 app.use(cors({
   origin: function(origin, callback){
@@ -62,6 +57,4 @@ app.get('/api', (req, res) => {
   })
 })
 
-app.listen(port, () => {
-  console.log(`Serveur à l'écoute sur le port ${port}`);
-})
+module.exports = app;
