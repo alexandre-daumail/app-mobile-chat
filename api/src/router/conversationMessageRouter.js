@@ -9,7 +9,7 @@ router.get(
   '/api/user/:id/conversation/:conversation_id',
   authMiddleware, 
   async (req, res) => {
-    conversation.getAllMessages(req, res)
+    conversationMessage.getAllMessages(req, res)
   }
 );
 

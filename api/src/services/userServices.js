@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
-const { generateToken } = require('../jwt/authJwt');
+const jwt = require('jsonwebtoken');
+const { generateToken, generateRefreshToken, verifyRefreshToken } = require('../jwt/authJwt');
 const { securityMiddleware } = require('../middlewares/securityMiddleware');
 
 const db = require("../models");
@@ -81,11 +82,14 @@ async function getJwt(req, res){
       .then(jwt => {
         if(jwt == true) {
           const token = generateToken(user);
+          const refreshToken = generateRefreshToken(user);
           res.status(201).send({
             status: 'Success',
             data: {
               user_id: user.id,
+              user_email: user.email,
               access_token: token,
+              refresh_token: refreshToken,
             }
           })
         } else {
@@ -272,6 +276,21 @@ async function deleteUser(req, res){
 }
 
 
+async function refreshToken(req, res) {
+  const authHeader = req.headers['authorization']
+  const token = authHeader && authHeader.split(' ')[1]
+
+  if(token == null) {
+    return res.status(401).send({
+      status: 'Error',
+      message: 'Empty token',
+    })
+  }
+
+  verifyRefreshToken(res, token);
+}
+
+
 module.exports = {
   getAllUsers,
   createUser,
@@ -279,5 +298,6 @@ module.exports = {
   getOneUser,
   userJoinChannel,
   updateUser,
-  deleteUser
+  deleteUser,
+  refreshToken,
 }

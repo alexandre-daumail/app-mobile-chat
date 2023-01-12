@@ -15,6 +15,9 @@ async function getAllMessages(req, res){
 
   if((userControl === 1)) {
     await Messages.findAll({
+      order: [
+        ['created_at', 'ASC'],
+      ],
       attributes: [
         'id', 
         'user_id_from',
@@ -22,6 +25,16 @@ async function getAllMessages(req, res){
         'message', 
         'created_at', 
         'updated_at'
+      ],
+      include: [
+        { 
+          model: db.user, as: 'id_from',
+          attributes: ['id', 'firstname', 'lastname']
+        },
+        { 
+          model: db.user, as: 'id_to',
+          attributes: ['id', 'firstname', 'lastname']
+        },
       ],
       where: { conversation_id: conversationId }
     })
@@ -151,7 +164,10 @@ async function deleteMessage(req, res){
 
   if((userControl === 1)) {
     Messages.destroy({
-      where: { id: msgId }
+      where: { 
+        id: msgId,
+        user_id_from: id,
+      }
     })
     .then(num => {
       if (num == 1) {

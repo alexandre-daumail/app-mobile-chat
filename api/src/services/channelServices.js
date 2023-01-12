@@ -38,7 +38,7 @@ async function getAllUsersInChannel(req, res){
 
   await UserChannel.findAll({
     attributes: ['id', 'created_at'],
-    where: { ChannelId: id }
+    where: { channel_id: id }
   })
   .then(channelAndUsers => { 
     res.status(200).send({
@@ -62,14 +62,19 @@ async function getUserChannels(req, res){
   const userControl = await securityMiddleware(userToken, id)
 
   if((userControl === 1) || (userControl === 2)) {
-    await Channel.findAll({
+    await UserChannel.findAll({
       attributes: [
         'id', 
-        'name',
-        'creator',
-        'private',
+        'user_id',
+        'channel_id',
       ],
-      where: { creator: id }
+      include: [
+        { 
+          model: Channel,
+          attributes: ['id', 'name']
+        },
+      ],
+      where: { user_id: id }
     })
     .then(channels => {
       res.status(200).send({
@@ -109,8 +114,8 @@ async function createChannel(req, res){
     Channel.create(channel)
     .then(channel => {
       const joinChannel = {
-        UserId: channel.creator,
-        ChannelId: channel.id,
+        user_id: channel.creator,
+        channel_id: channel.id,
       };
       UserChannel.create(joinChannel)
 
@@ -188,8 +193,8 @@ async function addUserChannel(req, res){
 
   const userToAddInChannel = await UserChannel.findOne({ 
     where: { 
-      UserId: userToAdd,
-      ChannelId: channelId,
+      user_id: userToAdd,
+      channel_id: channelId,
     }
   })
 
@@ -206,8 +211,8 @@ async function addUserChannel(req, res){
     .then(channel => { 
       if (channel.creator == id) {
         UserChannel.create({
-          UserId: userToAdd,
-          ChannelId: channelId,
+          user_id: userToAdd,
+          channel_id: channelId,
         })
         .then(userChannel => {
           res.status(201).send({
@@ -251,8 +256,8 @@ async function revokeUserChannel(req, res){
 
   const userChannel = await UserChannel.findOne({
     where: {
-      UserId: userToRemove,
-      ChannelId: channelId,
+      user_id: userToRemove,
+      channel_id: channelId,
     }
   });
 
@@ -276,8 +281,8 @@ async function revokeUserChannel(req, res){
 
     UserChannel.destroy({ 
       where: { 
-        UserId: userToRemove,
-        ChannelId: channelId,
+        user_id: userToRemove,
+        channel_id: channelId,
       } 
     })
     .then(num => {

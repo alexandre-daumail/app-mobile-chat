@@ -57,4 +57,13 @@ router.delete(
 );
 
 
+router.post(
+  '/api/refreshtoken',
+  async (req, res) => {
+    user.refreshToken(req, res);
+  }
+)
+
+
+
 module.exports = router;

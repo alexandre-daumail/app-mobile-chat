@@ -9,7 +9,7 @@ const channel = require('../services/channelServices');
 router.get(
   '/api/channels',
   async (req, res) => {
-    await channel.getAllChannel(req, res)
+    channel.getAllChannel(req, res)
   }
 );
 
@@ -23,7 +23,7 @@ router.get(
 
 /* PRIVATE : GET USER CHANNELS */
 router.get(
-  '/api/user/:id/channel', 
+  '/api/user/:id/channels', 
   authMiddleware, 
   async (req, res) => {
     channel.getUserChannels(req, res)

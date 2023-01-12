@@ -1,4 +1,7 @@
 module.exports = (sequelize, Sequelize) => {
+  User = require('./user.model')(sequelize, Sequelize);
+  Channel = require('./channel.model')(sequelize, Sequelize);
+
   const UserChannel = sequelize.define('UserChannel', {
     id: {
       type: Sequelize.INTEGER,
@@ -19,6 +22,13 @@ module.exports = (sequelize, Sequelize) => {
     },
   }, {
     tableName: 'user_channel'
+  });
+
+  UserChannel.belongsTo(User, {
+    foreignKey: 'user_id',
+  });
+  UserChannel.belongsTo(Channel, {
+    foreignKey: 'channel_id', 
   });
   
   return UserChannel;

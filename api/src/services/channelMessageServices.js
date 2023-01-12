@@ -8,12 +8,21 @@ async function getAllMessages(req, res){
   const id = req.params.id;
 
   await Messages.findAll({
+    order: [
+      ['created_at', 'ASC'],
+    ],
     attributes: [
       'id', 
       'user_id', 
       'message', 
       'created_at', 
       'updated_at'
+    ],
+    include: [
+      { 
+        model: db.user,
+        attributes: ['firstname', 'lastname']
+      },
     ],
     where: { channel_id: id }
   })

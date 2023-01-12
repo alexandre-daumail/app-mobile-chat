@@ -18,6 +18,12 @@ module.exports = (sequelize, Sequelize) => {
       defaultValue: sequelize.literal("CURRENT_TIMESTAMP"),
       allowNull: false,
     },
+    updatedAt: {
+      field: 'updated_at',
+      type: "TIMESTAMP",
+      defaultValue: sequelize.literal("CURRENT_TIMESTAMP"),
+      allowNull: false,
+    },
   }, {
     tableName: 'conversation_message'
   });

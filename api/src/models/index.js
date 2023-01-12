@@ -35,10 +35,6 @@ db.channelMessage = require("./channelMessage.model.js")(sequelize, Sequelize);
 db.userConversation = require("./userConversation.model")(sequelize, Sequelize);
 db.conversationMessage = require("./conversationMessage.model.js")(sequelize, Sequelize);
 
-/* Channel ManyToMany User */
-db.user.belongsToMany(db.channel, { through: db.userChannel });
-db.channel.belongsToMany(db.user, { through: db.userChannel });
-
 db.channel.hasMany(db.channelMessage, {
   foreignKey: 'channel_id'
 });
