@@ -164,25 +164,60 @@ async function userJoinChannel(req, res){
   
   const userControl = await securityMiddleware(userToken, id);
 
-  if((userControl === 1) || (userControl === 2)) {
-    const joinChannel = {
-      UserId: id,
-      ChannelId: channelId,
-    };
-  
-    UserChannel.create(joinChannel)
-    .then(userChannel => {
-      res.status(201).send({
-        status: 'Success',
-        data: userChannel,
-      })
+
+  if((userControl === 1) || (userControl === 2) && !userExistInChannel) {
+    await UserChannel.findOne({
+      attributes: ['id', 'created_at'],
+      where: { 
+        user_id: id,
+        channel_id: channelId, 
+      }
     })
-    .catch(err => {
-      res.status(500).send({
-        status: 'Error',
-        message: err.message,
-      });
-    });
+    .then((user) => {
+      if(user.length == 0) {
+        const joinChannel = {
+          user_id: id,
+          channel_id: channelId,
+        };
+  
+        UserChannel.create(joinChannel)
+        .then(userChannel => {
+          res.status(201).send({
+            status: 'Success',
+            data: userChannel,
+          })
+        })
+        .catch(err => {
+          res.status(500).send({
+            status: 'Error',
+            message: err.message,
+          });
+        });
+      } else {
+        res.status(500).send({
+          status: 'Error',
+          message: "Already done",
+        });
+      }
+    })
+    // const joinChannel = {
+    //   user_id: id,
+    //   channel_id: channelId,
+    // };
+  
+    // UserChannel.create(joinChannel)
+    // .then(userChannel => {
+    //   res.status(201).send({
+    //     status: 'Success',
+    //     data: userChannel,
+    //   })
+    // })
+    // .catch(err => {
+    //   res.status(500).send({
+    //     status: 'Error',
+    //     message: err.message,
+    //   });
+    // });
   } else {
     res.status(500).send({
       status: 'Error',

@@ -96,6 +96,50 @@ async function getUserChannels(req, res){
   }
 }
 
+/* PRIVATE : GET CHANNELS WHERE USER IS NOT INSIDE */
+async function getChannelsToJoin(req, res){
+  const id = req.params.id;
+
+  const userToken = req.body.tokenData;
+  const userControl = await securityMiddleware(userToken, id)
+
+  if((userControl === 1) || (userControl === 2)) {
+    await UserChannel.findAll({
+      attributes: [
+        'id', 
+        'user_id',
+        'channel_id',
+      ],
+      include: [
+        { 
+          model: Channel,
+          attributes: ['id', 'name']
+        },
+      ],
+      where: { 
+        user_id: { [Op.ne]: [id] },
+      }
+    })
+    .then(channels => {
+      res.status(200).send({
+        status: 'Success',
+        data: channels,
+      });
+    })
+    .catch(err => {
+      res.status(500).send({ 
+        status: 'Error',
+        message: err.message 
+      });
+    });
+  } else {
+    res.status(500).send({
+      status: 'Error',
+      message: "You're not autorized",
+    });
+  }
+}
+
 
 /* PRIVATE : CREATE A NEW CHANNEL */
 async function createChannel(req, res){
@@ -377,6 +421,7 @@ module.exports = {
   getAllChannel,
   getAllUsersInChannel,
   getUserChannels,
+  getChannelsToJoin,
   createChannel,
   updateChannel,
   addUserChannel,

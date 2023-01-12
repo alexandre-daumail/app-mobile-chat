@@ -30,6 +30,15 @@ router.get(
   }
 );
 
+/* PRIVATE : GET CHANNELS WHERE USER IS NOT INSIDE */
+router.get(
+  '/api/user/:id/channelstojoin', 
+  authMiddleware, 
+  async (req, res) => {
+    channel.getChannelsToJoin(req, res)
+  }
+);
+
 /* PRIVATE : CREATE A CHANNEL */
 router.post(
   '/api/user/:id/channel', 
