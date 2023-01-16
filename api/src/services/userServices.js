@@ -200,24 +200,6 @@ async function userJoinChannel(req, res){
         });
       }
     })
-    // const joinChannel = {
-    //   user_id: id,
-    //   channel_id: channelId,
-    // };
-  
-    // UserChannel.create(joinChannel)
-    // .then(userChannel => {
-    //   res.status(201).send({
-    //     status: 'Success',
-    //     data: userChannel,
-    //   })
-    // })
-    // .catch(err => {
-    //   res.status(500).send({
-    //     status: 'Error',
-    //     message: err.message,
-    //   });
-    // });
   } else {
     res.status(500).send({
       status: 'Error',

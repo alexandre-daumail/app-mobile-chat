@@ -15,15 +15,15 @@ async function getAllConversations(req, res){
 
   if((userControl === 1)) {
     await UserConversation.findAll({
-      attributes: ['id', 'created_at'],
+      attributes: ['id', 'created_at', 'user_id_from', 'user_id_to'],
       include: [
         { 
           model: db.user, as: 'id_from',
-          attributes: ['firstname', 'lastname']
+          attributes: ['id', 'firstname', 'lastname']
         },
         { 
           model: db.user, as: 'id_to',
-          attributes: ['firstname', 'lastname']
+          attributes: ['id', 'firstname', 'lastname']
         },
       ],
       where: {
