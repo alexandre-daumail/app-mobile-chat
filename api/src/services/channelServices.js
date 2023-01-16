@@ -38,6 +38,12 @@ async function getAllUsersInChannel(req, res){
 
   await UserChannel.findAll({
     attributes: ['id', 'created_at'],
+    include: [
+        { 
+          model: db.user,
+          attributes: ['id', 'firstname', 'lastname']
+        },
+      ],
     where: { channel_id: id }
   })
   .then(channelAndUsers => { 
@@ -235,13 +241,6 @@ async function addUserChannel(req, res){
   const userToken = req.body.tokenData;
   const userControl = await securityMiddleware(userToken, id);
 
-  const userToAddInChannel = await UserChannel.findOne({ 
-    where: { 
-      user_id: userToAdd,
-      channel_id: channelId,
-    }
-  })
-
   if((userControl === 1) || (userControl === 2)) {
     await Channel.findOne({
       attributes: [
@@ -298,13 +297,6 @@ async function revokeUserChannel(req, res){
   const channelId = req.params.channel_id;
   const userToRemove = req.params.id_to_remove;
 
-  const userChannel = await UserChannel.findOne({
-    where: {
-      user_id: userToRemove,
-      channel_id: channelId,
-    }
-  });
-
   const userToken = req.body.tokenData;
   const userControl = await securityMiddleware(userToken, id);
 
@@ -313,6 +305,7 @@ async function revokeUserChannel(req, res){
       where: { channel_id: channelId }
     });
     
+    console.log('msg to delete : ' + deleteMessages)
     const deleteMessagesIds = deleteMessages.map(el => el.id);
     
     await Messages.destroy({
@@ -327,7 +320,7 @@ async function revokeUserChannel(req, res){
       where: { 
         user_id: userToRemove,
         channel_id: channelId,
-      } 
+      }
     })
     .then(num => {
       if (num == 1) {
@@ -341,7 +334,7 @@ async function revokeUserChannel(req, res){
       } else {
         res.status(500).send({
           status: 'Error',
-          message: "Cannot deletethis user from your channel. Please retry."
+          message: "Cannot delete this user from your channel. Please retry."
         });
       }
     })
