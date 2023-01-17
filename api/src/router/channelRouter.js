@@ -21,6 +21,22 @@ router.get(
   }
 );
 
+/* PUBLIC : USER LIST NOT IN A CHANNEL */
+router.get(
+  '/api/channel/:id/users-not-in', 
+  async (req, res) => {
+    channel.getAllUsersNotInChannel(req, res)
+  }
+);
+
+/* PRIVATE : GET CHANNEL INFORMATIONS */
+router.get(
+  '/api/channel/:id/info',
+  async (req, res) => {
+    channel.getChannelInformations(req, res)
+  }
+);
+
 /* PRIVATE : GET USER CHANNELS */
 router.get(
   '/api/user/:id/channels', 

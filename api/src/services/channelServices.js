@@ -1,6 +1,7 @@
 const { securityMiddleware } = require("../middlewares/securityMiddleware");
 
 const db = require("../models");
+const User = db.user;
 const Channel = db.channel;
 const UserChannel = db.userChannel
 const Messages = db.channelMessage
@@ -59,6 +60,83 @@ async function getAllUsersInChannel(req, res){
     });
   });
 }
+
+/* PUBLIC : USER LIST NOT IN A CHANNEL */
+async function getAllUsersNotInChannel(req, res){
+  id = req.params.id;
+
+  let userInChannel = await UserChannel.findAll({
+    attributes: ['user_id'],
+    where: { channel_id: id }
+  })
+
+  const userInChannelIds = userInChannel.map(el => el.user_id);
+
+  console.log(userInChannelIds)
+  
+  await User.findAll({
+    attributes: ['id', 'firstname', 'lastname'],
+    where: {
+      id: {
+        [Op.notIn]: userInChannelIds,
+      },
+    },
+  })
+  .then(channelAndUsers => { 
+    console.log(channelAndUsers)
+    res.status(200).send({
+      status: 'Success',
+      data: channelAndUsers,
+    });
+  })
+  .catch(err => {
+    res.status(500).send({ 
+      status: 'Error',
+      message: err.message 
+    });
+  });
+}
+
+/* PRIVATE : CHANNEL INFORMATIONS */
+async function getChannelInformations(req, res){
+  const id = req.params.id;
+
+  await Channel.findOne({
+    attributes: [
+      'id', 
+      'name',
+      'creator',
+      'private',
+      'created_at',
+    ],
+    where: { id: id }
+  })
+  .then(channel => {
+    User.findOne({
+      attributes: [
+        'firstname',
+        'lastname',
+      ],
+      where: {id: channel.creator}
+    })
+    .then((creator) => {
+      res.status(200).send({
+        status: 'Success',
+        data: {
+          channel,
+          creator
+        },
+      });
+    })
+  })
+  .catch(err => {
+    res.status(500).send({ 
+      status: 'Error',
+      message: err.message 
+    });
+  });
+}
+
 
 /* PRIVATE : GET USER CHANNEL */
 async function getUserChannels(req, res){
@@ -376,6 +454,20 @@ async function deleteChannel(req, res){
       },
     });
 
+    let deleteUserChannel = await UserChannel.findAll({
+      where: { channel_id: channelId }
+    })
+
+    const deleteUserChannelIds = deleteUserChannel.map(el => el.id);
+
+    await UserChannel.destroy({
+      where: {
+        [Op.and]: {
+          id: deleteUserChannelIds,
+        },
+      },
+    });
+
     Channel.destroy({ 
       where: { id: channelId } 
     })
@@ -413,6 +505,8 @@ async function deleteChannel(req, res){
 module.exports = {
   getAllChannel,
   getAllUsersInChannel,
+  getAllUsersNotInChannel,
+  getChannelInformations,
   getUserChannels,
   getChannelsToJoin,
   createChannel,
