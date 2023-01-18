@@ -13,6 +13,15 @@ async function getAllMessages(req, res){
   const userToken = req.body.tokenData;
   const userControl = await securityMiddleware(userToken, id);
 
+  const blockedValue = await UserConversation.findOne({
+    attributes: [
+      'blocked'
+    ],
+    where: {
+      id: conversationId
+    }
+  })
+
   if((userControl === 1)) {
     await Messages.findAll({
       order: [
@@ -43,6 +52,7 @@ async function getAllMessages(req, res){
         status: 'Success',
         data: {
           conversation_id: conversationId,
+          blocked: blockedValue.blocked,
           messages: msg,
         }
       });
@@ -66,10 +76,16 @@ async function createMessage(req, res){
 
 
   if((userControl === 1)) {
-    const userConversation = await UserConversation.findByPk(conversationId)
+    const userConversation = await UserConversation.findOne({
+      where: {
+        id: conversationId,
+        blocked: false,
+      }
+    })
 
     if(!userConversation) {
       res.status(500).send({
+        status: 'Blocked',
         message: "You're not autorized to send a message"
       });
     } else {

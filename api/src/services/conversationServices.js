@@ -9,13 +9,13 @@ const { Op } = require('sequelize');
 /* PRIVATE : GET ALL PRIVATE CONVERSATIONS */
 async function getAllConversations(req, res){
   const id = req.params.id;
+
   const userToken = req.body.tokenData;
-  
   const userControl = await securityMiddleware(userToken, id);
 
   if((userControl === 1)) {
     await UserConversation.findAll({
-      attributes: ['id', 'created_at', 'user_id_from', 'user_id_to'],
+      attributes: ['id', 'user_id_from', 'user_id_to', 'blocked', 'created_at',],
       include: [
         { 
           model: db.user, as: 'id_from',
@@ -53,13 +53,49 @@ async function getAllConversations(req, res){
   }
 }
 
+/* PRIVATE : GET BLOCKED VALUES FROM A PRIVATE CONVERSATION */
+async function getBlockedValue(req, res){
+  const id = req.params.id;
+  const conversationId = req.params.conversation_id;
+
+  const userToken = req.body.tokenData;
+  const userControl = await securityMiddleware(userToken, id);
+
+  if((userControl === 1)) {
+    await UserConversation.findOne({
+      attributes: [
+        'blocked'
+      ],
+      where: {
+        id: conversationId
+      }
+    })
+    .then(result => {
+      res.status(200).send({
+        status: 'Success',
+        data: result.blocked,
+      });
+    })
+    .catch(err => {
+      res.status(500).send({
+        status: 'Error',
+        message: err.message,
+      });
+    });
+  } else {
+    res.status(500).send({
+      status: 'Error',
+      message: "You're not autorized to see this or this information",
+    });
+  }
+}
 
 /* PRIVATE : GET ONE PRIVATE CONVERSATION MESSAGES */
 async function getOneConversation(req, res){
   const id = req.params.id;
   const conversationId = req.params.conversation_id;
+
   const userToken = req.body.tokenData;
-  
   const userControl = await securityMiddleware(userToken, id);
 
   if((userControl === 1)) {
@@ -108,18 +144,79 @@ async function createConversation(req, res){
   const userToken = req.body.tokenData;
   const userControl = await securityMiddleware(userToken, id)
 
-  const conversation = {
-    user_id_from: userToken.id,
-    user_id_to: userIdTo,
-  }
-
   if((userControl === 1) || (userControl === 2)) {
-    UserConversation.create(conversation)
-    .then(conversation => {
-      res.status(201).send({
-        status: 'Success',
-        data: conversation,
-      });
+    await UserConversation.findOne({
+      attributes: ['id'],
+      where: { 
+        user_id_from: userToken.id,
+        user_id_to: userIdTo,
+      }
+    })
+    .then((userConv) => {
+      if(userConv == null) {
+        const conversation = {
+          user_id_from: userToken.id,
+          user_id_to: userIdTo,
+        }
+  
+        UserConversation.create(conversation)
+        .then(conversation => {
+          res.status(201).send({
+            status: 'Success',
+            data: conversation,
+          });
+        })
+        .catch(err => {
+          res.status(500).send({
+            status: 'Error',
+            message: err.message,
+          });
+        });
+      } else {
+        res.status(500).send({
+          status: 'Error',
+          message: "Already done",
+        });
+      }
+    })
+  } else {
+    res.status(500).send({
+      status: 'Error',
+      message: "You're not autorized to create a Conversation",
+    });
+  }
+}
+
+/* PRIVATE : UPDATE A MESSAGE INSIDE A CONVERSATION  */
+async function updateBlockedConversation(req, res){
+  const id = req.params.id;
+  const conversationId = req.params.conversation_id;
+
+  const userToken = req.body.tokenData;
+  const userControl = await securityMiddleware(userToken, id);
+
+  const blockedValue = {
+    blocked: req.body.blocked,
+  };
+
+  if((userControl === 1)) {
+    await UserConversation.update(blockedValue, {
+      where: {
+        id: conversationId,
+      }
+    })
+    .then(num => {
+      if (num == 1) {
+        res.status(200).send({
+          status: 'Success',
+          data: blockedValue
+        });
+      } else {
+        res.status(500).send({
+          status: 'Error',
+          message: "Cannot update message. Please retry."
+        });
+      }
     })
     .catch(err => {
       res.status(500).send({
@@ -130,7 +227,7 @@ async function createConversation(req, res){
   } else {
     res.status(500).send({
       status: 'Error',
-      message: "You're not autorized to create a Conversation",
+      message: "You're not autorized to create a message",
     });
   }
 }
@@ -198,6 +295,8 @@ async function deleteConversation(req, res){
 module.exports = {
   getAllConversations,
   getOneConversation,
+  getBlockedValue,
   createConversation,
+  updateBlockedConversation,
   deleteConversation,
 }

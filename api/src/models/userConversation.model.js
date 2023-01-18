@@ -7,6 +7,11 @@ module.exports = (sequelize, Sequelize) => {
       autoIncrement: true,
       primaryKey: true
     },
+    blocked: {
+      type: Sequelize.BOOLEAN,
+      defaultValue: false,
+      allowNull: false,
+    },
     createdAt: {
       field: 'created_at',
       type: "TIMESTAMP",

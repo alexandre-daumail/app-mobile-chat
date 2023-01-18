@@ -14,6 +14,15 @@ router.get(
   }
 );
 
+/* PRIVATE : GET BLOCKED VALUES FROM A PRIVATE CONVERSATION */
+router.get(
+  '/api/user/:id/conversation/:conversation_id/blocked',
+  authMiddleware, 
+  async (req, res) => {
+    conversation.getBlockedValue(req, res)
+  }
+);
+
 /* PRIVATE : CREATE A PRIVATE CONVERSATION */
 router.post(
   '/api/user/:id/conversation/:user_id_to',
@@ -22,6 +31,14 @@ router.post(
     conversation.createConversation(req, res)
   }
 );
+
+router.put(
+  '/api/user/:id/conversation/:conversation_id',
+  authMiddleware,
+  async (req, res) => {
+    conversation.updateBlockedConversation(req, res)
+  }
+)
 
 /* PRIVATE : DELETE A PRIVATE CONVERSATION */
 router.delete(
