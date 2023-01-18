@@ -439,7 +439,14 @@ async function deleteChannel(req, res){
   const userToken = req.body.tokenData;
   const userControl = await securityMiddleware(userToken, id);
 
-  if((userControl === 1) || (userControl === 2)) {
+  const userCreator = await Channel.findOne({
+    where: {
+      id: channelId,
+      creator: id,
+    }
+  })
+
+  if((userControl === 1 && userCreator) || (userControl === 2)) {
     let deleteMessages = await Messages.findAll({
       where: { channel_id: channelId }
     });
@@ -496,7 +503,7 @@ async function deleteChannel(req, res){
   } else {
     res.status(500).send({
       status: 'Error',
-      message: "You're not autorized to delete this Channel",
+      message: "Seul l'administrateur peut supprimer le groupe",
     });
   }
 }
