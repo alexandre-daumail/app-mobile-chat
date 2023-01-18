@@ -411,6 +411,7 @@ async function revokeUserChannel(req, res){
           [Op.and]: {
             id: deleteMessagesIds,
           },
+          user_id: userToRemove,
         },
       });
 
