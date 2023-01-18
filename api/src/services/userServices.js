@@ -165,7 +165,7 @@ async function userJoinChannel(req, res){
   const userControl = await securityMiddleware(userToken, id);
 
 
-  if((userControl === 1) || (userControl === 2) && !userExistInChannel) {
+  if((userControl === 1) || (userControl === 2)) {
     await UserChannel.findOne({
       attributes: ['id', 'created_at'],
       where: { 
@@ -174,7 +174,7 @@ async function userJoinChannel(req, res){
       }
     })
     .then((user) => {
-      if(user.length == 0) {
+      if(user == null) {
         const joinChannel = {
           user_id: id,
           channel_id: channelId,

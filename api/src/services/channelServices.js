@@ -11,12 +11,19 @@ const { Op } = require("sequelize");
 /* PUBLIC : CHANNELS LIST */
 async function getAllChannel(req, res){
   await Channel.findAll({
+    order: [
+      ['created_at', 'DESC'],
+    ],
     attributes: [
       'id', 
       'name',
       'creator',
       'private',
+      'created_at',
     ],
+    where: {
+      private: 0,
+    },
   })
   .then(channels => {
     res.status(200).send({
