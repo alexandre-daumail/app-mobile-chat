@@ -385,50 +385,69 @@ async function revokeUserChannel(req, res){
   const userToken = req.body.tokenData;
   const userControl = await securityMiddleware(userToken, id);
 
-  if((userControl === 1) || (userControl === 2)) {
-    let deleteMessages = await Messages.findAll({
-      where: { channel_id: channelId }
-    });
-    
-    console.log('msg to delete : ' + deleteMessages)
-    const deleteMessagesIds = deleteMessages.map(el => el.id);
-    
-    await Messages.destroy({
-      where: {
-        [Op.and]: {
-          id: deleteMessagesIds,
-        },
-      },
-    });
+  const channelCreator = await Channel.findOne({
+    attributes: [
+      'creator',
+    ],
+    where: {
+      id: channelId,
+    }
+  })
+  .then(res => {
+    console.log(res.creator)
+    return res.creator
+  })
 
-    UserChannel.destroy({ 
-      where: { 
-        user_id: userToRemove,
-        channel_id: channelId,
-      }
-    })
-    .then(num => {
-      if (num == 1) {
-        res.status(200).send({
-          status: 'Success',
-          data: {
-            user_id: id,
-            info: "User was deleted successfully from your channel!",
-          }
-        });
-      } else {
-        res.status(500).send({
-          status: 'Error',
-          message: "Cannot delete this user from your channel. Please retry."
-        });
-      }
-    })
-    .catch(err => {
-      res.status(500).send({ 
-        status: 'Error',
-        message: err.message 
+  if((userControl === 1) || (userControl === 2)) {
+    if(channelCreator == id) {
+      let deleteMessages = await Messages.findAll({
+        where: { channel_id: channelId }
       });
-    });
+      
+      const deleteMessagesIds = deleteMessages.map(el => el.id);
+      
+      await Messages.destroy({
+        where: {
+          [Op.and]: {
+            id: deleteMessagesIds,
+          },
+        },
+      });
+
+      UserChannel.destroy({ 
+        where: { 
+          user_id: userToRemove,
+          channel_id: channelId,
+        }
+      })
+      .then(num => {
+        if (num == 1) {
+          res.status(200).send({
+            status: 'Success',
+            data: {
+              user_id: id,
+              info: "User was deleted successfully from your channel!",
+            }
+          });
+        } else {
+          res.status(500).send({
+            status: 'Error',
+            message: "Cannot delete this user from your channel. Please retry."
+          });
+        }
+      })
+      .catch(err => {
+        res.status(500).send({ 
+          status: 'Error',
+          message: err.message 
+        });
+      });
+    } else {
+      res.status(500).send({
+        status: 'Error',
+        message: 'You doesn\'t have authorizations to remove user in this channel',
+      });
+    }
   } else {
     res.status(500).send({
       status: 'Error',
