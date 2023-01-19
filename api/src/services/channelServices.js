@@ -162,7 +162,7 @@ async function getUserChannels(req, res){
       include: [
         { 
           model: Channel,
-          attributes: ['id', 'name']
+          attributes: ['id', 'name', 'private']
         },
       ],
       where: { user_id: id }
