@@ -52,7 +52,6 @@ const generateRefreshToken = (user) => {
  * @returns 
  */
 const verifyRefreshToken = (res, token) => {
-  // return jwt.verify(token, process.env.REFRESH_SECRET);
   jwt.verify(token, process.env.REFRESH_SECRET, (err, user) => {
     if(err) {
       return res.status(401).send({

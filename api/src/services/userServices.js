@@ -62,7 +62,7 @@ async function createUser(req, res){
     });
   })
   .catch(err => {
-    res.status(500).send({
+    res.status(401).send({
       status: 'Error',
       message: err.message,
     });
@@ -93,7 +93,7 @@ async function getJwt(req, res){
             }
           })
         } else {
-          res.status(404).send({
+          res.status(401).send({
             status: 'Error',
             message: 'Error. Wrong login or password'
           });
@@ -102,7 +102,7 @@ async function getJwt(req, res){
     }
   }
   catch(err) {
-    res.status(500).send({
+    res.status(401).send({
       status: 'Error',
       message: err.message,
     });
@@ -148,7 +148,7 @@ async function getOneUser(req, res){
       });
     });
   } else {
-    res.status(500).send({
+    res.status(401).send({
       status: 'Error',
       message: "You're not autorized to see user informations",
     });
@@ -201,7 +201,7 @@ async function userJoinChannel(req, res){
       }
     })
   } else {
-    res.status(500).send({
+    res.status(401).send({
       status: 'Error',
       message: "You're not autorized to make this action",
     });
@@ -243,7 +243,7 @@ async function updateUser(req, res){
       });
     });
   } else {
-    res.status(500).send({
+    res.status(401).send({
       status: 'Error',
       message: "You're not autorized to update user informations",
     });
@@ -285,7 +285,7 @@ async function deleteUser(req, res){
       });
     });
   } else {
-    res.status(500).send({
+    res.status(401).send({
       status: 'Error',
       message: "You're not autorized to delete user informations",
     });
