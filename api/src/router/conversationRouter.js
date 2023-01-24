@@ -32,6 +32,15 @@ router.post(
   }
 );
 
+/* PRIVATE : GET A PRIVATE CONVERSATION */
+router.get(
+  '/api/user/:id/conversation/:user_id_to',
+  authMiddleware, 
+  async (req, res) => {
+    conversation.getConversation(req, res)
+  }
+);
+
 router.put(
   '/api/user/:id/conversation/:conversation_id',
   authMiddleware,

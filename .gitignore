@@ -1,6 +1,0 @@
-﻿.idea
-.git
-api/node_modules
-api/coverage
-api/.env
-.DS_Store

@@ -11,6 +11,16 @@ const app = express();
 
 const db = require('./models');
 
+/** DATABASE SYNCHRONISATION */
+db.sequelize.sync()
+.then(() => { 
+  console.log('Synced db.') 
+})
+.catch((err) => { 
+  console.log('Error : ' + err.message) 
+});
+
+
 /** SOCKET.IO */
 const http = require('http');
 const server = http.createServer(app);
@@ -23,7 +33,6 @@ io.on('connection', (socket) => {
     console.log('user disconnected');
   });
 });
-
 
 
 /** CORS ORIGIN */
@@ -40,12 +49,13 @@ app.use(cors({
 
     if(allowedOrigins.indexOf(origin) === -1){
       const msg = 'The CORS policy for this site does not ' +
-          'allow access from the specified Origin.';
+                  'allow access from the specified Origin.';
       return callback(new Error(msg), false);
     }
     return callback(null, true);
   }
 }));
+
 
 /** API */
 app.use(express.urlencoded({ extended: false }));
@@ -63,4 +73,6 @@ app.get('/api', (req, res) => {
   })
 })
 
-module.exports = app;
+app.listen(port, () => {
+  console.log(`Listening on port ${port}`);
+});

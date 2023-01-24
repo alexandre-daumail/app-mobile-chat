@@ -187,6 +187,46 @@ async function createConversation(req, res){
   }
 }
 
+/* PRIVATE : GET ONE CONVERSATION */
+async function getConversation(req, res){
+  const id = req.params.id;
+  const userIdTo = req.params.user_id_to;
+
+  const userToken = req.body.tokenData;
+  const userControl = await securityMiddleware(userToken, id)
+
+  if((userControl === 1) || (userControl === 2)) {
+    await UserConversation.findOne({
+      attributes: ['id'],
+      where: {
+        user_id_from : {
+          [Op.or]: [userToken.id, userIdTo]
+        },
+        user_id_to: {
+          [Op.or]: [userToken.id, userIdTo]
+        }
+      }
+    })
+    .then(conversation => {
+      res.status(200).send({
+        status: 'Success',
+        data: conversation,
+      });
+    })
+    .catch(err => {
+      res.status(500).send({
+        status: 'Error',
+        message: err.message,
+      });
+    });
+  } else {
+    res.status(500).send({
+      status: 'Error',
+      message: "You're not autorized to create a Conversation",
+    });
+  }
+}
+
 /* PRIVATE : UPDATE A MESSAGE INSIDE A CONVERSATION  */
 async function updateBlockedConversation(req, res){
   const id = req.params.id;
@@ -297,6 +337,7 @@ module.exports = {
   getOneConversation,
   getBlockedValue,
   createConversation,
+  getConversation,
   updateBlockedConversation,
   deleteConversation,
 }

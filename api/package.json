@@ -2,10 +2,10 @@
   "name": "api",
   "description": "An API with node.js",
   "version": "1.0.0",
-  "main": "src/server.js.js",
+  "main": "src/index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/alexandre-daumail/app-mobile-chat.git"
+    "url": "git+https://github.com/remi-lopez/app-mobile-chat.git"
   },
   "keywords": [
     "API",
@@ -16,9 +16,9 @@
   "author": "Rémi LOPEZ",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/alexandre-daumail/app-mobile-chat/issues"
+    "url": "https://github.com/remi-lopez/app-mobile-chat/issues"
   },
-  "homepage": "https://github.com/alexandre-daumail/app-mobile-chat#readme",
+  "homepage": "https://github.com/remi-lopez/app-mobile-chat#readme",
   "dependencies": {
     "bcrypt": "^5.1.0",
     "cors": "^2.8.5",
@@ -32,9 +32,9 @@
     "socket.io": "^4.5.4"
   },
   "scripts": {
-    "dev": "nodemon --watch src -e js,json --exec \"node src/server.js\"",
-    "build": "tsup src/server.js --format cjs --clean",
-    "start": "node src/server.js",
+    "dev": "nodemon --watch src -e js,json --exec \"node src/index.js\"",
+    "build": "tsup src/index.js --format cjs --clean",
+    "start": "node src/index.js",
     "test": "jest"
   },
   "devDependencies": {

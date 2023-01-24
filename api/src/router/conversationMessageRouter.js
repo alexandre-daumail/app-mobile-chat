@@ -6,7 +6,7 @@ const conversationMessage = require('../services/conversationMessageServices');
 
 /* PRIVATE : GET ALL MESSAGES IN A PRIVATE CONVERSATION */
 router.get(
-  '/api/user/:id/conversation/:conversation_id',
+  '/api/user/:id/conversation/:conversation_id/message',
   authMiddleware, 
   async (req, res) => {
     conversationMessage.getAllMessages(req, res)
