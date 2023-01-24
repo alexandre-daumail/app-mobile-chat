@@ -3,6 +3,11 @@ import common from '../style/common.style.js';
 
 
 export default StyleSheet.create({
+  container: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex:1,
+  },
   screen: {
     position: 'relative',
     minHeight: '100%',
@@ -98,7 +103,16 @@ export default StyleSheet.create({
     ...common.p10,
     ...common.borderRadius5,
     ...common.boxShadow,
-    backgroundColor: 'black',
+    backgroundColor: '#1c81c5',
+  },
+  buttonMv2: {
+    ...common.width70,
+    ...common.mauto,
+    ...common.mv12,
+    ...common.p10,
+    ...common.borderRadius5,
+    ...common.boxShadow,
+    backgroundColor: '#6ec24a',
   },
   blackBtnText: {
     lineHeight: 21,
