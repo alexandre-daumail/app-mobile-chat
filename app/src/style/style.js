@@ -11,6 +11,7 @@ export default StyleSheet.create({
   screen: {
     position: 'relative',
     minHeight: '100%',
+    backgroundColor:'white',
   },
   viewAuth: {
     ...common.flex,
@@ -223,6 +224,15 @@ export default StyleSheet.create({
     backgroundColor: '#000000',
   },
 
+  headerReturn: {
+    ...common.width100,
+    ...common.flexRow,
+    ...common.flexBetweenCenter,
+    height: 40,
+    marginTop: 30,
+    borderColor: '#BEE5EF'
+
+  },
   header: {
     ...common.width90,
     ...common.flexRow,
@@ -247,7 +257,9 @@ export default StyleSheet.create({
     ...common.borderRadius50,
     height: 40,
     width: 40,
-    borderWidth: 1,
+    marginLeft: 10,
+    fontWeight : 30,
+    borderWidth: 3,
     borderColor: 'gray',
   },
   headerBtn: {
@@ -257,9 +269,8 @@ export default StyleSheet.create({
   whiteCard: {
     ...common.width90,
     ...common.paddingBorder20,
-    ...common.mv15,
+
     ...common.borderRadius5,
-    ...common.boxShadow,
     backgroundColor: '#FFFFFF',
   },
   flexRowBetween: {

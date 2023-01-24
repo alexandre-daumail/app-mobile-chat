@@ -7,12 +7,12 @@ import styles from '../../style/style';
 
 export default function FixedHeaderGoBack(props) {
   return (
-    <View style={styles.header}>
+    <View style={styles.headerReturn}>
       <Pressable style={styles.headerCta} onPress={props.goBack}>
         <Text>
           <Ionicons
             name={'arrow-back'}
-            color={'gray'} 
+            color={'gray'}
             size={25}
           />
         </Text>
