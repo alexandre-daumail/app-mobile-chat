@@ -259,7 +259,7 @@ export default StyleSheet.create({
     width: 40,
     marginLeft: 10,
     fontWeight : 30,
-    borderWidth: 3,
+    borderWidth: 2,
     borderColor: 'gray',
   },
   headerBtn: {
