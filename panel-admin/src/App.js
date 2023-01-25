@@ -1,23 +1,16 @@
-import logo from './logo.svg';
-import './App.css';
+
+import './assets/css/App.css';
+import LoginForm from "./components/LoginForm";
+import SCLogo from "./assets/images/simplechat.png";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="App-header">
+  <div className="Login-Card">
+    <img src={SCLogo} width={'20%'}  alt='SimpleChat'/>
+    <h4> PANEL ADMIN</h4>
+<LoginForm/>
+  </div>
     </div>
   );
 }

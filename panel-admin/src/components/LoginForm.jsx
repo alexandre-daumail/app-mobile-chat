@@ -14,22 +14,22 @@ function LoginForm() {
         <form onSubmit={handleSubmit}>
             <label>
                 Nom d'utilisateur :
-                <input
-                    type="text"
-                    value={username}
-                    onChange={e => setUsername(e.target.value)}
-                />
             </label>
-            <br />
+            <input
+                type="text"
+                value={username}
+                onChange={e => setUsername(e.target.value)}
+            />
+
             <label>
                 Mot de passe :
-                <input
-                    type="password"
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
-                />
             </label>
-            <br />
+            <input
+                type="password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+            />
+         
             <button type="submit">Se connecter</button>
         </form>
     );

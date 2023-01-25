@@ -1,0 +1,91 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #94ceda;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+ .Login-Card {
+   background-color: whitesmoke;
+   width: 40%;
+  margin: auto;
+   padding: 1% 0 1% 0;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   border-radius: 10px;
+   color: #282c34;
+     box-shadow: inset 0 0 1em whitesmoke, 0 0 0.5em white;
+ }
+ form{
+     display: flex;
+     flex-direction: column;
+     width: 100%;
+     align-items: center;
+ }
+  form label {
+      font-size: medium;
+  }
+   form input {
+       margin: 3%;
+       width: 50%;
+       height: 3vh;
+   }
+
+   form button {
+       width: 45%;
+       text-align: center;
+       height: 5vh;
+       border: none;
+       font-weight: bold;
+       background-color: #78b75d;
+       color: white;
+       font-size: large;
+       border-radius: 5px;
+
+   }
+
+form button:hover {
+    width: 45%;
+    text-align: center;
+    height: 5vh;
+    border: none;
+    font-weight: bold;
+    background-color: #78b75d;
+    color: white;
+    font-size: large;
+    border-radius: 5px;
+
+
+}
