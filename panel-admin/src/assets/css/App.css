@@ -60,7 +60,9 @@
    form input {
        margin: 3%;
        width: 50%;
-       height: 3vh;
+       height: 4vh;
+       border-color: rgba(107, 112, 124, 0.4);
+       border-radius: 3px;
    }
 
    form button {
@@ -73,7 +75,6 @@
        color: white;
        font-size: large;
        border-radius: 5px;
-
    }
 
 form button:hover {
