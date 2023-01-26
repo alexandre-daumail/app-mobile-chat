@@ -24,7 +24,7 @@ function LoginForm() {
                 } else {
                     // Si la connexion a réussi, enregistrer l'utilisateur et rediriger vers la page d'accueil
                     localStorage.setItem('user', JSON.stringify(data.user));
-                    window.location.href = '/admin/allusers';
+                    window.location.href = '/';
                 }
             })
             .catch(error => {

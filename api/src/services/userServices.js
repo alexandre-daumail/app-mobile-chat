@@ -110,12 +110,11 @@ async function getJwt(req, res){
 async function getAdminJwt(req, res){
   const user = await User.findOne({ where: { 
     email: req.body.email,
+    roles: 'ADMIN'
   }})
-
-  const userControl = await securityMiddleware(userToken, id);
-
+ 
   try {
-    if(user && userControl === 2) {
+    if(user) {
       await bcrypt.compare(req.body.password, user.password)
       .then(jwt => {
         if(jwt == true) {
