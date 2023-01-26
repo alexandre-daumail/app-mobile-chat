@@ -14,10 +14,7 @@ require('dotenv').config()
 async function getAllUsers(req, res) {
   await User.findAll({
     attributes: [
-      'id',
       'username',
-      'firstname', 
-      'lastname',
     ]
   })
   .then(users => {
@@ -96,6 +93,48 @@ async function getJwt(req, res){
           res.status(401).send({
             status: 'Error',
             message: 'Error. Wrong login or password'
+          });
+        }
+      });
+    }
+  }
+  catch(err) {
+    res.status(401).send({
+      status: 'Error',
+      message: err.message,
+    });
+  }
+}
+
+/* PUBLIC : ADMIN LOGIN */
+async function getAdminJwt(req, res){
+  const user = await User.findOne({ where: { 
+    email: req.body.email,
+  }})
+
+  const userControl = await securityMiddleware(userToken, id);
+
+  try {
+    if(user && userControl === 2) {
+      await bcrypt.compare(req.body.password, user.password)
+      .then(jwt => {
+        if(jwt == true) {
+          const token = generateToken(user);
+          const refreshToken = generateRefreshToken(user);
+          res.status(201).send({
+            status: 'Success',
+            data: {
+              user_id: user.id,
+              user_email: user.email,
+              user_role : user.roles,
+              access_token: token,
+              refresh_token: refreshToken,
+            }
+          })
+        } else {
+          res.status(401).send({
+            status: 'Error',
+            message: 'Error. Wrong login/password or wrong right'
           });
         }
       });
@@ -312,6 +351,7 @@ module.exports = {
   getAllUsers,
   createUser,
   getJwt,
+  getAdminJwt,
   getOneUser,
   userJoinChannel,
   updateUser,

@@ -3,6 +3,7 @@ const { authMiddleware } = require('../middlewares/authMiddleware');
 const express = require('express');
 const router = express.Router();
 const user = require('../services/userServices');
+const { rolesMiddleware } = require('../middlewares/roleMiddleware');
 
 
 /* PUBLIC : USERS LIST */
@@ -18,6 +19,12 @@ router.post('/api/register', async (req, res) => {
 /* PUBLIC : LOGIN */
 router.post('/api/login', async (req, res) => {
   user.getJwt(req, res);
+})
+
+/* PUBLIC : ADMIN LOGIN */
+router.post('/api/admin/login',  async (req, res) => {
+    user.getAdminJwt(req, res);
+  
 })
 
 /* PRIVATE : USER INFORMATION */

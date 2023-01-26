@@ -63,6 +63,7 @@
        height: 4vh;
        border-color: rgba(107, 112, 124, 0.4);
        border-radius: 3px;
+       text-align: center;
    }
 
    form button {
