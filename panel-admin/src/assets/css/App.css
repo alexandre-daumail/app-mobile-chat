@@ -76,6 +76,7 @@
        color: white;
        font-size: large;
        border-radius: 5px;
+       cursor: pointer;
    }
 
 form button:hover {
@@ -84,10 +85,9 @@ form button:hover {
     height: 5vh;
     border: none;
     font-weight: bold;
-    background-color: #78b75d;
+    background-color: #8de06f;
     color: white;
     font-size: large;
     border-radius: 5px;
-
-
+    cursor: pointer;
 }
