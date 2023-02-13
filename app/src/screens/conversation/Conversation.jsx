@@ -11,9 +11,6 @@ import {
   secureRequestContent,
 } from '../../security/Api';
 
-import { getUserId } from '../../security/AsyncStorage';
-import { regenerateToken } from '../../security/Credential';
-
 import HeaderChat from '../../components/header/HeaderChat';
 import KeyboardView from '../../components/keyboard/KeyboardView';
 import ConversationMessages from '../../components/flatlist/ConversationMessages';
@@ -21,21 +18,23 @@ import FormInput from '../../components/input/FormInput';
 import IconButton from '../../components/Iconbutton';
 
 import styles from '../../style/style';
+import { AuthState } from '../../security/Context';
 
 
 const Conversation = ({ route, navigation })  => {
   const { id } = route.params;
   const { name } = route.params;
-  const { user_id } = route.params;
 
+  const { user } = React.useContext(AuthState);
   const [status, setStatus] = React.useState(null)
   const [conversation, setConversation] = React.useState(null);
 
   const [message, onChangeMessage] = React.useState('');
 
+
   const getMessages = async () => {
     await secureRequest(
-      `user/${user_id}/conversation/${id}/message`,
+      `user/${user}/conversation/${id}/message`,
       'GET',
     )
     .then((res) => {
@@ -46,13 +45,13 @@ const Conversation = ({ route, navigation })  => {
   }
 
   const postMessage = async () => {
-    if(message != ''){
+    if(user != 0 && message != ''){
       let msg = {
         'message': message,
       }
-
+      
       await secureRequestContent(
-        `user/${user_id}/conversation/${id}/message`,
+        `user/${user}/conversation/${id}/message`,
         'POST',
         msg,
       )
@@ -68,15 +67,8 @@ const Conversation = ({ route, navigation })  => {
   }
 
   React.useEffect(() => {
-    if(status == 'Error') {
-      regenerateToken();
-    } else if(status != 'Error') {
-      getMessages();
-    }
+    getMessages();
 
-    /**
-    * CLEAN STATE
-    */
     const handleFocus = navigation.addListener('focus', () => {
       getMessages();
     });
@@ -94,7 +86,7 @@ const Conversation = ({ route, navigation })  => {
           navigation.navigate('ConversationSettings', {
             id: id,
             name: name,
-            user_id: user_id
+            user_id: user,
           })
         }}
         goBack={() => navigation.goBack()}
@@ -103,9 +95,9 @@ const Conversation = ({ route, navigation })  => {
       <KeyboardView>
         <FlatList
           data={conversation}
-          renderItem={({item}) => <ConversationMessages conversation={item} user={user_id} id={id} onPress={getMessages} />}
+          renderItem={({item}) => <ConversationMessages conversation={item} id={id} onPress={getMessages} />}
           keyExtractor={item => item.id}
-          extraData={[user_id, id, getMessages]}
+          extraData={[id, getMessages]}
           contentContainerStyle={styles.flatlistWrapper}
         />
 

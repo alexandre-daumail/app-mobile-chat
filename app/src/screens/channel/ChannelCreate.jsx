@@ -8,34 +8,27 @@ import {
 
 import { secureRequestContent } from '../../security/Api';
 
-import { getUserId } from '../../security/AsyncStorage';
-import { regenerateToken } from '../../security/Credential';
-
 import FixedHeaderGoBack from '../../components/header/FixedHeaderGoBack';
 import BlackPressable from '../../components/button/BlackPressable';
 import FormInput from '../../components/input/FormInput';
 
 import styles from '../../style/style';
+import { AuthState } from '../../security/Context';
 
 
 const ChannelCreate = ({ navigation }) => {
-  const [user, setUser] = React.useState(0);
+  const { user } = React.useContext(AuthState);
   
-  const [status, setStatus] = React.useState(null);
   const [name, setName] = React.useState('');
   const [privacy, setPrivacy] = React.useState(false);
 
-  const userCredential = async () => {
-    await getUserId()
-    .then((res) => setUser(res))
-  }
 
   const handlePrivacy = async () => {
     setPrivacy(!privacy);
   }
 
   const createChannel = async () => {
-    if(name != ''){
+    if(user != 0 && name != ''){
       let newChannel = {
         'name': name,
         'private': privacy,
@@ -47,7 +40,6 @@ const ChannelCreate = ({ navigation }) => {
         newChannel,
       )
       .then((res) => {
-        setStatus(res.status)
         if(res.status != 'Error') {
           navigation.navigate('ChannelUsers', {
             id: res.data.id,
@@ -57,14 +49,6 @@ const ChannelCreate = ({ navigation }) => {
       });
     }
   }
-
-  React.useEffect(() => {
-    userCredential();
-
-    if(status == 'Error') {
-      regenerateToken();
-    } 
-  })
 
 
   return (

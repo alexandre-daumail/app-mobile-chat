@@ -4,17 +4,18 @@ import {
   Text, 
   View 
 } from 'react-native';
+import { AuthState } from '../../security/Context';
 
 import styles from '../../style/style';
 
 
 /**
  * @param {*} conversation List of conversations returned by request
- * @param {*} user Connected user ID 
  * @param {*} navigation Usefull for navigate method
  */
-export default function UserConversations({ conversation, user, navigation }) {
+export default function UserConversations({ conversation, navigation }) {
 
+  const { user } = React.useContext(AuthState);
   const [initials, setInitials] = React.useState('');
 
   const handleInitials = async (item) => {
@@ -43,7 +44,7 @@ export default function UserConversations({ conversation, user, navigation }) {
 
   React.useEffect(() => {
     handleInitials(conversation);
-  }, [conversation])
+  }, [user])
 
   return (
     <View key={conversation.id} style={styles.chatWrapper}>

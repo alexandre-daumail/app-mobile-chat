@@ -149,12 +149,43 @@ async function deleteMessage(req, res){
   const userToken = req.body.tokenData;
   const userControl = await securityMiddleware(userToken, userId);
 
-  if((userControl === 1) || (userControl === 2)) {
+  if(userControl === 1) {
     Messages.destroy({
       where: { 
         id: msgId,
         channel_id: channelId,
         user_id: userId
+      }
+    })
+    .then(num => {
+      if (num == 1) {
+        res.status(200).send({
+          status: 'Success',
+          data: {
+            channel_id: channelId,
+            user_id: userId,
+            message_id: msgId,
+            info: "Message was deleted successfully!",
+          }
+        });
+      } else {
+        res.status(500).send({
+          status: 'Error',
+          message: "Cannot delete message. Please retry."
+        });
+      }
+    })
+    .catch(err => {
+      res.status(500).send({
+        status: 'Error',
+        message: err.message,
+      });
+    });
+  } else if(userControl === 2) {
+    Messages.destroy({
+      where: { 
+        id: msgId,
+        channel_id: channelId,
       }
     })
     .then(num => {

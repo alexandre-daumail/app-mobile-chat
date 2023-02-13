@@ -22,7 +22,7 @@ async function getAllMessages(req, res){
     }
   })
 
-  if((userControl === 1)) {
+  if((userControl === 1 || (userControl === 2))) {
     await Messages.findAll({
       order: [
         ['created_at', 'ASC'],
@@ -75,7 +75,7 @@ async function createMessage(req, res){
   const userControl = await securityMiddleware(userToken, id);
 
 
-  if((userControl === 1)) {
+  if((userControl === 1 || (userControl === 2))) {
     const userConversation = await UserConversation.findOne({
       where: {
         id: conversationId,
@@ -131,7 +131,7 @@ async function updateMessage(req, res){
     message: req.body.message,
   };
 
-  if((userControl === 1)) {
+  if((userControl === 1 || (userControl === 2))) {
     Messages.update(msg, {
       where: {
         id: msgId,
@@ -178,7 +178,7 @@ async function deleteMessage(req, res){
   const userToken = req.body.tokenData;
   const userControl = await securityMiddleware(userToken, id);
 
-  if((userControl === 1)) {
+  if((userControl === 1 || (userControl === 2))) {
     Messages.destroy({
       where: { 
         id: msgId,

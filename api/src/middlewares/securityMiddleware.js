@@ -8,12 +8,19 @@ const User = db.user
 async function securityMiddleware(token, id) {
   const userToken = token;
 
-  const user = await User.findOne({ where: { 
-    id: userToken.id
-  }})
+  const user = await User.findOne({ 
+    attributes: [
+      'id',
+      'username',
+      'roles', 
+    ],
+    where: { 
+      id: userToken.id
+    }
+  })
   const userRole = user.roles
 
-  if (userRole === 'USER' && userToken.id == id) {
+  if ((userRole === 'USER') && userToken.id == id) {
     return 1;
   } else if (userRole === 'ADMIN') {
     return 2;

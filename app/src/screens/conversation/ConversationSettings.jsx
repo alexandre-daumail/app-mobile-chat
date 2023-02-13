@@ -12,25 +12,24 @@ import {
   secureRequestContent,
 } from '../../security/Api';
 
-import { getUserId } from '../../security/AsyncStorage';
-import { regenerateToken } from '../../security/Credential';
-
 import FixedHeaderGoBack from '../../components/header/FixedHeaderGoBack';
 
 import styles from '../../style/style';
+import { AuthState } from '../../security/Context';
 
 
 const ConversationSettings = ({ route, navigation }) => {
   const { id } = route.params;
   const { name } = route.params;
-  const { user_id } = route.params;
+
+  const { user } = React.useContext(AuthState);
 
   const [status, setStatus] = React.useState(null)
   const [blockedValue, setBlockedValue] = React.useState(null);
 
   const getBlockedStatus = async () => {
     await secureRequest(
-      `user/${user_id}/conversation/${id}/blocked`,
+      `user/${user}/conversation/${id}/blocked`,
       'GET',
     )
     .then((res) => {
@@ -47,7 +46,7 @@ const ConversationSettings = ({ route, navigation }) => {
     }
 
     await secureRequestContent(
-      `user/${user_id}/conversation/${id}`,
+      `user/${user}/conversation/${id}`,
       'PUT',
       blocked,
     )
@@ -70,7 +69,7 @@ const ConversationSettings = ({ route, navigation }) => {
 
   const deleteConversation = async () => {
     await secureRequestContent(
-      `user/${user_id}/conversation/${id}`,
+      `user/${user}/conversation/${id}`,
       'DELETE',
     )
     .then((res) => {
@@ -81,15 +80,8 @@ const ConversationSettings = ({ route, navigation }) => {
   }
 
   React.useEffect(() => {
-    if(status == 'Error') {
-      regenerateToken();
-    } else if(status != 'Error') {
-      getBlockedStatus();
-    }
+    getBlockedStatus();
 
-    /**
-    * CLEAN STATE
-    */
     const handleFocus = navigation.addListener('focus', () => {
       getBlockedStatus();
     });

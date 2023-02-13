@@ -6,16 +6,18 @@ import {
 } from 'react-native';
 
 import { secureRequest } from '../../security/Api';
+import { AuthState } from '../../security/Context';
 
 import styles from '../../style/style';
 
 /**
  * @param {*} u List of users returned by request
- * @param {*} user Connected user ID 
  * @param {*} onPress Function for re-render
+ * @param {*} navigation Usefull for navigate method
  */
-export default function PublicUser({ u, user, onPress, navigation }) {
+export default function PublicUser({ u, onPress, navigation }) {
 
+  const { user } = React.useContext(AuthState);
   const [initials, setInitials] = React.useState('');
 
   const handleInitials = async (item) => {
@@ -50,7 +52,7 @@ export default function PublicUser({ u, user, onPress, navigation }) {
 
   React.useEffect(() => {
     handleInitials(u);
-  }, [u])
+  }, [user])
 
   return (
     <View key={u.id}>

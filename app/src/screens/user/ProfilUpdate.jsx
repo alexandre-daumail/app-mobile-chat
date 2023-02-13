@@ -10,7 +10,6 @@ import {
 } from '../../security/Api';
 
 import { getUserId } from '../../security/AsyncStorage';
-import { regenerateToken } from '../../security/Credential';
 
 import KeyboardView from '../../components/keyboard/KeyboardView';
 import FixedHeaderGoBack from '../../components/header/FixedHeaderGoBack';
@@ -18,11 +17,11 @@ import BlackPressable from '../../components/button/BlackPressable';
 import FormInput from '../../components/input/FormInput';
 
 import styles from '../../style/style';
+import { AuthState } from '../../security/Context';
 
 
 export default function ProfilUpdate({ route, navigation }) {
-  const { user_id } = route.params;
-
+  const { user } = React.useContext(AuthState);
   const [status, setStatus] = React.useState(null);
   const [userInfo, setUserInfo] = React.useState({});
 
@@ -31,9 +30,10 @@ export default function ProfilUpdate({ route, navigation }) {
   const [lastname, onChangeLastname] = React.useState('');
   const [email, onChangeEmail] = React.useState('');
 
+
   const userInformations = async () => {
     await secureRequest(
-      `user/${user_id}`,
+      `user/${user}`,
       'GET',
     )
     .then((res) => {
@@ -73,24 +73,31 @@ export default function ProfilUpdate({ route, navigation }) {
   }
 
   const putUserInformations = async () => {
-    await userChanges()
-    .then((body) => {
-      console.log(body)
-      secureRequestContent(
-        `user/${user_id}`,
-        'PUT',
-        body,
-      )
-      .then((res) => {
-        setStatus(res.status);
-        
-        if(res.status = 'Success') return navigation.navigate('Profil');
+    if(user != 0) {
+      await userChanges()
+      .then((body) => {
+        secureRequestContent(
+          `user/${user}`,
+          'PUT',
+          body,
+        )
+        .then((res) => {
+          setStatus(res.status);
+          
+          if(res.status = 'Success') return navigation.navigate('Profil');
+        })
       })
-    })
+    }
   }
 
   React.useEffect(() => {
     userInformations();
+    
+    const handleFocus = navigation.addListener('focus', () => {
+      userInformations();
+    });
+
+    return handleFocus;
   }, [status])
   
 

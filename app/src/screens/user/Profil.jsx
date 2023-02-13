@@ -7,31 +7,19 @@ import {
 } from 'react-native';
 
 import { secureRequest } from '../../security/Api';
-import { getUserId } from '../../security/AsyncStorage';
-
-import {  
-  resetCredentials, 
-  regenerateToken 
-} from '../../security/Credential';
 
 import styles from '../../style/style';
 
 import { AuthState } from '../../security/Context';
+import LogoutPressable from '../../components/button/LogoutPressable';
 
 
 const Profil = ({ navigation }) => {
-  const [user, setUser] = React.useState(0);
+  const { user } = React.useContext(AuthState);
 
   const [status, setStatus] = React.useState(null)
   const [createdAt, setCreatedAt] = React.useState('');
   const [userInfo, setUserInfo] = React.useState(null);
-
-  const { logout } = React.useContext(AuthState);
-
-  const userCredential = async () => {
-    await getUserId()
-    .then((res) => setUser(res))
-  }
 
   const userInformations = async () => {
     await secureRequest(
@@ -48,37 +36,20 @@ const Profil = ({ navigation }) => {
     })
   }
 
-  const disconnect = async () => {
-    await resetCredentials()
-    .then((res) => {
-      console.log('user disconnected');
-      return logout();
-    })
-  };
-
   const formatDate = (dateString) => {
     const options = { year: "numeric", month: "long", day: "numeric"}
     return new Date(dateString).toLocaleDateString(undefined, options)
   }
 
   React.useEffect(() => {
-    userCredential();
+    userInformations();
 
-    if(status == 'Error') {
-      regenerateToken();
-    } else if(status != 'Error') {
-      userInformations();
-    }
-
-    /**
-    * CLEAN STATE
-    */
     const handleFocus = navigation.addListener('focus', () => {
       userInformations();
     });
 
     return handleFocus;
-  }, [status, user])
+  }, [status])
 
 
   return (
@@ -107,12 +78,7 @@ const Profil = ({ navigation }) => {
 
       <View style={styles.whiteCard}>
         <Text style={styles.pressableWarning}>Vous devrez vous reconnecter pour accéder à nouveau à vos conversations et groupes.</Text>
-        <Pressable 
-          style={styles.deletePressable}
-          onPress={disconnect}
-        >
-          <Text style={styles.deletePressableText}>Deconnexion</Text>
-        </Pressable>
+        <LogoutPressable />
       </View>
     </SafeAreaView>
   )

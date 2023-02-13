@@ -7,17 +7,19 @@ import {
 } from 'react-native';
 
 import { secureRequest } from '../../security/Api';
+import { AuthState } from '../../security/Context';
 
 import styles from '../../style/style';
 
 
 /**
  * @param {*} conversation List of conversation messages returned by request
- * @param {*} user Connected user ID 
  * @param {*} id Conversation ID
  * @param {*} onPress Function for re-render
  */
-export default function ConversationMessages({ conversation, user, id, onPress }) {
+export default function ConversationMessages({ conversation, id, onPress }) {
+
+  const { user } = React.useContext(AuthState);
 
   const deleteMessage = async (msg_id) => {
     await secureRequest(

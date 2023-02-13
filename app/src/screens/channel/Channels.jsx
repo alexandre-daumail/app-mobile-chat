@@ -15,27 +15,20 @@ import {
   secureRequest,
 } from '../../security/Api';
 
-import { getUserId } from '../../security/AsyncStorage';
-import { regenerateToken } from '../../security/Credential';
-
-import FixedHeader from '../../components/header/FixedHeader';
 import UserChannels from '../../components/flatlist/UserChannels';
 
 import styles from '../../style/style';
 import PublicChannel from '../../components/flatlist/PublicChannel';
+import { AuthState } from '../../security/Context';
 
 
 const Channels = ({ navigation }) => {
-  const [user, setUser] = React.useState(0);
+  const { user } = React.useContext(AuthState);
 
   const [status, setStatus] = React.useState(null)
   const [channelList, setChannelList] = React.useState(null);
   const [channels, setChannels] = React.useState(null);
 
-  const userCredential = async () => {
-    await getUserId()
-    .then((res) => setUser(res))
-  }
 
   const getAllChannels = async () => {
     await simpleRequest(
@@ -63,25 +56,16 @@ const Channels = ({ navigation }) => {
 
 
   React.useEffect(() => {
-    userCredential();
+    getAllChannels();
+    getChannels();
 
-    if(status == 'Error') {
-      regenerateToken();
-    } else if(status != 'Error') {
-      getAllChannels();
-      getChannels();
-    }
-
-    /**
-    * CLEAN STATE
-    */
     const handleFocus = navigation.addListener('focus', () => {
       getAllChannels();
       getChannels();
     });
 
     return handleFocus;
-  }, [status, user])
+  }, [status])
 
 
   return (
@@ -107,18 +91,13 @@ const Channels = ({ navigation }) => {
           </Text>
         </Pressable>
       </View>
-      {/* <FixedHeader 
-        iconName={'pencil'}
-        placeholder={'Rechercher un groupe..'}
-        navigateTo={() => navigation.navigate('NewChannel')}
-      /> */}
 
       <View style={styles.horizontalWrapper}>
         <FlatList
           data={channelList}
-          renderItem={({item}) => <PublicChannel channel={item} user={user} navigation={navigation} />}
+          renderItem={({item}) => <PublicChannel channel={item} navigation={navigation} />}
           keyExtractor={item => item.id}
-          extraData={[user, navigation]}
+          extraData={[navigation]}
           horizontal={true}
         />
       </View>
