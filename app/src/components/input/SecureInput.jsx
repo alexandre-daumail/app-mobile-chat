@@ -33,6 +33,7 @@ export default function SecureInput(props) {
         }}
       >
         <Text>
+
           <Ionicons 
             name={isPasswordSecure ? 'eye-outline' : 'eye-off-outline'} 
             size={20} 

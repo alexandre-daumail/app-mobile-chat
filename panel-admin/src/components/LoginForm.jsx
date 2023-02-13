@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import SCLogo from "../assets/images/simplechat.png";
 function LoginForm() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -24,7 +24,9 @@ function LoginForm() {
                 } else {
                     // Si la connexion a réussi, enregistrer l'utilisateur et rediriger vers la page d'accueil
                     localStorage.setItem('user', JSON.stringify(data.user));
-                    window.location.href = '/';
+
+                    window.location.href = '/admin/all-users';
+
                 }
             })
             .catch(error => {
@@ -32,22 +34,32 @@ function LoginForm() {
                 setError('Une erreur s\'est produite lors de la connexion.');
             });
     }
+    console.log(localStorage.user)
     return (
-        <form onSubmit={handleSubmit}>
-            <label>
-                Email:
-            </label>
-            <input type="email" placeholder="Votre email" onChange={e => setEmail(e.target.value)} autoComplete="username"/>
 
-            <label>
-                Mot de passe :
-            </label>
-            <input type="password" placeholder="Mot de passe" onChange={e => setPassword(e.target.value)} autoComplete="current-password" />
+        <div className="App-header">
+            <div className="Login-Card">
+                <img src={SCLogo} width={'20%'}  alt='SimpleChat'/>
+                <h4> PANEL ADMIN</h4>
+                <form onSubmit={handleSubmit}>
+                    <label>
+                        Email:
+                    </label>
+                    <input type="email" placeholder="Votre email" onChange={e => setEmail(e.target.value)} autoComplete="username"/>
 
-            {error && <p style={{color: 'red', fontSize:'small'}}>{error}</p>}
+                    <label>
+                        Mot de passe :
+                    </label>
+                    <input type="password" placeholder="Mot de passe" onChange={e => setPassword(e.target.value)} autoComplete="current-password" />
 
-            <button type="submit" >Se connecter</button>
-        </form>
+                    {error && <p style={{color: 'red', fontSize:'small'}}>{error}</p>}
+
+                    <button type="submit" >Se connecter</button>
+                </form>
+            </div>
+
+        </div>
+
     );
     }
 

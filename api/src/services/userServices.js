@@ -106,45 +106,49 @@ async function getJwt(req, res){
   }
 }
 
+
 /* PUBLIC : ADMIN LOGIN */
 async function getAdminJwt(req, res){
-  const user = await User.findOne({ where: { 
-    email: req.body.email,
-    roles: 'ADMIN'
-  }})
- 
   try {
-    if(user) {
-      await bcrypt.compare(req.body.password, user.password)
-      .then(jwt => {
-        if(jwt == true) {
-          const token = generateToken(user);
-          const refreshToken = generateRefreshToken(user);
-          res.status(201).send({
-            status: 'Success',
-            data: {
-              user_id: user.id,
-              user_email: user.email,
-              user_role : user.roles,
-              access_token: token,
-              refresh_token: refreshToken,
-            }
-          })
-        } else {
-          res.status(401).send({
-            status: 'Error',
-            message: 'Error. Wrong login/password or wrong right'
-          });
-        }
+    const user = await User.findOne({ 
+      where: { 
+        email: req.body.email,
+        roles: 'ADMIN' // Vérifiez si l'utilisateur est un administrateur
+      }
+    });
+    if (!user) {
+      return res.status(401).send({
+        status: 'Error',
+        message: 'Error. Wrong login/password or wrong right'
       });
     }
-  }
-  catch(err) {
+    const validPassword = await bcrypt.compare(req.body.password, user.password);
+    if (!validPassword) {
+      return res.status(401).send({
+        status: 'Error',
+        message: 'Error. Wrong login/password or wrong right'
+      });
+    }
+    // Générez les jetons d'accès et de rafraîchissement
+    const token = generateToken(user);
+    const refreshToken = generateRefreshToken(user);
+    res.status(201).send({
+      status: 'Success',
+      data: {
+        user_id: user.id,
+        user_email: user.email,
+        user_role : user.roles,
+        access_token: token,
+        refresh_token: refreshToken,
+      }
+    });
+  } catch (err) {
     res.status(401).send({
       status: 'Error',
       message: err.message,
     });
   }
+
 }
 
 
