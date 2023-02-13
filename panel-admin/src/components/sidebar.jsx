@@ -1,10 +1,12 @@
 import React from 'react';
 import { CSidebar } from '@coreui/react';
 import { CSidebarBrand,CSidebarToggler,CNavItem,CSidebarNav,CNavTitle,CNavGroup, CBadge } from '@coreui/react';
-import { CIcon } from '@coreui/icons-react';
+import CIcon from '@coreui/icons-react';
+import { cilSpeedometer, cilPuzzle } from '@coreui/icons';
+
 const Sidebar = () => {
     return (
-        <div className="sidebar">
+        <div className="sidebar vh-100">
             <CSidebar>
                 <CSidebarBrand>Sidebar Brand</CSidebarBrand>
                 <CSidebarNav>
