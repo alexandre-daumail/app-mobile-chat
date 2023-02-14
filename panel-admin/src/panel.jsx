@@ -2,8 +2,8 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@coreui/coreui/dist/css/coreui.min.css';
 import Sidebar from "./components/sidebar";
-import Navbar from "./components/navbar";
 import Footer from "./components/footer";
+import AppHeader from "./components/navbar";
 
 export default function Panel () {
     return (
@@ -12,7 +12,7 @@ export default function Panel () {
                 <Sidebar className="flex-grow-1" />
             </div>
             <div className="row-col-md-9 p-0 m-0 d-flex  flex-column">
-                <Navbar className={""}/>
+                <AppHeader/>
                 <div className="container mt-3 flex-grow-1">
                     {/* Votre contenu ici */}
                 </div>

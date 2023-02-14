@@ -15,11 +15,11 @@ const Sidebar = () => {
     };
     return (
             <aside>
-
-                <CSidebar>
-                    <CSidebarToggler onClick={onToggleClick}/>
+                <CSidebar> <CSidebarToggler  onClick={onToggleClick} /> </CSidebar>
+                <CSidebar visible={sidebarShow}>
+                    <CSidebarToggler  onClick={onToggleClick} />
                     <CSidebarBrand>Sidebar Brand</CSidebarBrand>
-                    <CSidebarNav visible={sidebarShow}>
+                    <CSidebarNav >
                         <CNavTitle>Nav Title</CNavTitle>
                         <CNavItem href="#">
                             <CIcon customClassName="nav-icon" icon={cilSpeedometer} />

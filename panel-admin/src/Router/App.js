@@ -8,7 +8,7 @@ function AppRoutes() {
   return (
 
       <Routes>
-        <Route path="/admin" element={<LoginForm />} />
+        <Route path="/" element={<LoginForm />} />
         <Route path="/admin/panel" element={<Panel />} />
       </Routes>
 
