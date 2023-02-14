@@ -7,21 +7,19 @@ const api = "http://10.10.24.16:3001/api/"
  * @param {*} method GET, POST, PUT or DELETE
  */
 const simpleRequest = async (path, method) => {  
-  let result = null;
-
-  await fetch(api + path, {
-    method: method,
-    headers: {
-      'Content-Type': 'application/json',
-    }
-  })
-  .then((response) => response.json())
-  .then((data) => {
-    result = data
-  });
-
-  return result;
+  try {
+    const response = await fetch(api + path, {
+      method: method,
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    })
+    const data = await response.json();
+    return data;
+  } catch (error) {
+  console.error(error);
 };
+}
 
 /**
  * Request without access token
@@ -29,48 +27,43 @@ const simpleRequest = async (path, method) => {
  * @param {*} method GET, POST, PUT or DELETE
  * @param {*} content object value
  */
-const simpleRequestContent = async (path, method, content) => {  
-  let result = null;
-
-  await fetch(api + path, {
-    method: method,
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(content),
-  })
-  .then((response) => response.json())
-  .then((data) => {
-    result = data
-  });
-
-  return result;
+const simpleRequestContent = async (path, method, content) => {
+  try {
+    const response = await fetch(api + path, {
+      method: method,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(content),
+    });
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
 };
-
 /**
  * Request with access token
  * @param {*} path endpoint URL
  * @param {*} method GET, POST, PUT or DELETE
  */
-const secureRequest = async (path, method) => {  
-  const access = await getAccessToken()
-  let result = null;
-
-  await fetch(api + path, {
-    method: method,
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${access}`,
-    }
-  })
-  .then((response) => response.json())
-  .then((data) => {
-    result = data
-  });
-
-  return result;
+const secureRequest = async (path, method) => {
+  try {
+    const access = await getAccessToken();
+    const response = await fetch(api + path, {
+      method: method,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${access}`,
+      },
+    });
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    // handle the error
+    console.error(error);
+  }
 };
-
 /**
  * Request with access token
  * @param {*} path endpoint URL
@@ -78,24 +71,23 @@ const secureRequest = async (path, method) => {
  * @param {*} content object value
  */
 const secureRequestContent = async (path, method, content) => {  
-  const access = await getAccessToken()
-  let result = null;
+try {
+    const access = await getAccessToken();
+  
+    const response = await fetch(api + path, {
+      method: method,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${access}`,
+      },
+      body: JSON.stringify(content),
+    })
+    const data = await response.json();
+    return data;
+} catch (error) {
+  console.error(error);
 
-  await fetch(api + path, {
-    method: method,
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${access}`,
-    },
-    body: JSON.stringify(content),
-  })
-  .then((response) => response.json())
-  .then((data) => {
-    result = data
-  });
-
-  return result;
-};
+}};
 
 
 export {
