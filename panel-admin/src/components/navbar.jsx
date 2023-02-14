@@ -1,37 +1,21 @@
 import React from 'react';
-import {useState} from "react";
-import { CNavbar,CContainer,CNavbarNav,CNavItem,CCollapse,CNavbarBrand,CNavbarToggler,CNavLink} from "@coreui/react";
+import { CNavbar,CContainer,CNavbarBrand,CButton,CForm} from "@coreui/react";
 
-const Navbar = () => {
-            const [visible, setVisible] = useState(false)
+function Navbar () {
+
             return (
-            <>
-                <CNavbar expand="lg" colorScheme="light" className="bg-light">
-                    <CContainer fluid className='w-100'>
-                        <CNavbarBrand href="#">Navbar</CNavbarBrand>
-                        <CNavbarToggler onClick={() => setVisible(!visible)} />
-                        <CCollapse className="navbar-collapse" visible={visible}>
-                            <CNavbarNav>
-                                <CNavItem>
-                                    <CNavLink href="#" active>
-                                        Home
-                                    </CNavLink>
-                                </CNavItem>
-                                <CNavItem>
-                                    <CNavLink href="#">Link</CNavLink>
-                                </CNavItem>
 
-                                <CNavItem>
-                                    <CNavLink href="#" disabled>
-                                        Disabled
-                                    </CNavLink>
-                                </CNavItem>
-                            </CNavbarNav>
-
-                        </CCollapse>
+                <CNavbar colorScheme="light" className="bg-light d-flex">
+                    <CContainer>
+                        <div className=" d-flex w-100">
+                            <CNavbarBrand href="#">Nom Prenom </CNavbarBrand>
+                            <CForm>
+                                <CButton className='w-25 ' type="submit" color="danger" variant="outline">
+                                    Déconnexion
+                                </CButton>
+                            </CForm></div>
                     </CContainer>
                 </CNavbar>
-            </>
             )
 };
 
