@@ -1,9 +1,10 @@
 import * as React from 'react';
-import {
+import { 
   SafeAreaView,
-  View,
+  View, 
   Pressable,
-  Text, Image,
+  Text, 
+  Image,
 } from 'react-native';
 
 import styles from '../../style/style';
@@ -16,8 +17,9 @@ export default function Welcome({ navigation }) {
         <Image source={require('../../images/simplechat.png')}/>
       </View>
       <Text style={{textAlign:'center'}}>  Discutez et partagez tout simplement.</Text>
+
       <View style={styles.viewAuth}>
-        <Pressable
+      <Pressable
           title={'Connexion'}
           onPress={() => navigation.navigate('Connexion')}
           style={styles.buttonMv2}

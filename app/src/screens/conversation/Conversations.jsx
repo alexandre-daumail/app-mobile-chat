@@ -12,27 +12,20 @@ import {
   secureRequest,
 } from '../../security/Api';
 
-import { getUserId } from '../../security/AsyncStorage';
-import { regenerateToken } from '../../security/Credential';
-
-import FixedHeader from '../../components/header/FixedHeader';
 import UserConversations from '../../components/flatlist/UserConversations'
 import PublicUser from '../../components/flatlist/PublicUser';
 
 import styles from '../../style/style';
+import { AuthState } from '../../security/Context';
 
 
 const Conversations = ({ navigation }) => {
-  const [user, setUser] = React.useState(0);
+  const { user } = React.useContext(AuthState);
 
   const [userList, setUserList] = React.useState(null);
   const [status, setStatus] = React.useState(null);
   const [conversations, setConversations] = React.useState(null);
 
-  const userCredential = async () => {
-    await getUserId()
-    .then((res) => setUser(res))
-  }
 
   const getAllUsers = async () => {
     await simpleRequest(
@@ -60,25 +53,16 @@ const Conversations = ({ navigation }) => {
 
 
   React.useEffect(() => {
-    userCredential();
+    getAllUsers();
+    getConversations();
 
-    if(status == 'Error') {
-      regenerateToken();
-    } else if(status != 'Error') {
-      getAllUsers();
-      getConversations();
-    }
-
-    /**
-    * CLEAN STATE
-    */
     const handleFocus = navigation.addListener('focus', () => {
       getAllUsers();
       getConversations();
     });
 
     return handleFocus;
-  }, [status, user])
+  }, [status])
 
 
   return (
@@ -96,9 +80,9 @@ const Conversations = ({ navigation }) => {
       <View style={styles.horizontalWrapper}>
         <FlatList
           data={userList}
-          renderItem={({item}) => <PublicUser u={item} user={user} onPress={getConversations} navigation={navigation} />}
+          renderItem={({item}) => <PublicUser u={item} onPress={getConversations} navigation={navigation} />}
           keyExtractor={item => item.id}
-          extraData={[user, getConversations, navigation]}
+          extraData={[getConversations, navigation]}
           horizontal={true}
         />
       </View>
@@ -106,9 +90,9 @@ const Conversations = ({ navigation }) => {
       <View style={styles.viewChat}>
         <FlatList
           data={conversations}
-          renderItem={({item}) => <UserConversations conversation={item} user={user} navigation={navigation} />}
+          renderItem={({item}) => <UserConversations conversation={item} navigation={navigation} />}
           keyExtractor={item => item.id}
-          extraData={[user, navigation]}
+          extraData={[navigation]}
         />
       </View>
     </SafeAreaView>

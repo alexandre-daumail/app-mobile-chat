@@ -8,6 +8,46 @@ const Messages = db.channelMessage
 const { Op } = require("sequelize");
 
 
+/* PRIVATE : ADMIN CHANNELS LIST */
+async function adminGetAllChannel(req, res){
+  const id = req.params.id;
+
+  const userToken = req.body.tokenData;
+  const userControl = await securityMiddleware(userToken, id)
+
+  if(userControl === 2) {
+    await Channel.findAll({
+      order: [
+        ['created_at', 'DESC'],
+      ],
+      attributes: [
+        'id', 
+        'name',
+        'creator',
+        'private',
+        'created_at',
+      ],
+    })
+    .then(channels => {
+      res.status(200).send({
+        status: 'Success',
+        data: channels,
+      });
+    })
+    .catch(err => {
+      res.status(500).send({ 
+        status: 'Error',
+        message: err.message 
+      });
+    });
+  } else {
+    res.status(500).send({
+      status: 'Error',
+      message: "You're not autorized",
+    })
+  }
+}
+
 /* PUBLIC : CHANNELS LIST */
 async function getAllChannel(req, res){
   await Channel.findAll({
@@ -537,6 +577,7 @@ async function deleteChannel(req, res){
 
 
 module.exports = {
+  adminGetAllChannel,
   getAllChannel,
   getAllUsersInChannel,
   getAllUsersNotInChannel,

@@ -9,7 +9,7 @@ import { getAccessToken } from "./AsyncStorage";
 const simpleRequest = async (path, method) => {  
   let result = null;
 
-  await fetch("http://127.0.0.1:3000/api/" + path, {
+  await fetch("http://127.0.0.1:3001/api/" + path, {
     method: method,
     headers: {
       'Content-Type': 'application/json',
@@ -32,7 +32,7 @@ const simpleRequest = async (path, method) => {
 const simpleRequestContent = async (path, method, content) => {  
   let result = null;
 
-  await fetch("http://127.0.0.1:3000/api/" + path, {
+  await fetch("http://127.0.0.1:3001/api/" + path, {
     method: method,
     headers: {
       'Content-Type': 'application/json',
@@ -56,7 +56,7 @@ const secureRequest = async (path, method) => {
   const access = await getAccessToken()
   let result = null;
 
-  await fetch("http://127.0.0.1:3000/api/" + path, {
+  await fetch("http://127.0.0.1:3001/api/" + path, {
     method: method,
     headers: {
       'Content-Type': 'application/json',
@@ -81,7 +81,7 @@ const secureRequestContent = async (path, method, content) => {
   const access = await getAccessToken()
   let result = null;
 
-  await fetch("http://127.0.0.1:3000/api/" + path, {
+  await fetch("http://127.0.0.1:3001/api/" + path, {
     method: method,
     headers: {
       'Content-Type': 'application/json',

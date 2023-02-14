@@ -7,7 +7,7 @@ import styles from '../../style/style';
 export default function BlackPressable(props) {
   return (
     <Pressable
-      style={styles.buttonMv2}
+      style={styles.blackBtn}
       title={props.title}
       onPress={props.onPress}
     >

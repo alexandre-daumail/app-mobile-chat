@@ -29,6 +29,15 @@ router.get(
   }
 );
 
+/* PRIVATE : ADMIN CHANNELS LIST */
+router.get(
+  '/api/admin/:id/channels',
+  authMiddleware,
+  async (req, res) => {
+    channel.adminGetAllChannel(req, res)
+  }
+);
+
 /* PRIVATE : GET CHANNEL INFORMATIONS */
 router.get(
   '/api/channel/:id/info',

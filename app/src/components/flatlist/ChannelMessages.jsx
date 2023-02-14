@@ -7,20 +7,22 @@ import {
 } from 'react-native';
 
 import { secureRequest } from '../../security/Api';
+import { AuthState } from '../../security/Context';
 
 import styles from '../../style/style';
 
 
 /**
  * @param {*} channel List of channel messages returned by request
- * @param {*} user Connected user ID 
  * @param {*} id Channel ID
  * @param {*} onPress Function for re-render
  */
-export default function ChannelMessages({ channel, user, id, onPress }) {
+export default function ChannelMessages({ channel, id, onPress }) {
+
+  const { user } = React.useContext(AuthState);
 
   const deleteMessage = async (msg_id) => {
-    await secureDeleteRequest(
+    await secureRequest(
       `user/${user}/channel/${id}/message/${msg_id}`,
       'DELETE',
     )

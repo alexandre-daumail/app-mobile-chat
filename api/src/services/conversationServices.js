@@ -13,7 +13,7 @@ async function getAllConversations(req, res){
   const userToken = req.body.tokenData;
   const userControl = await securityMiddleware(userToken, id);
 
-  if((userControl === 1)) {
+  if((userControl === 1 || (userControl === 2))) {
     await UserConversation.findAll({
       attributes: ['id', 'user_id_from', 'user_id_to', 'blocked', 'created_at',],
       include: [
@@ -61,7 +61,7 @@ async function getBlockedValue(req, res){
   const userToken = req.body.tokenData;
   const userControl = await securityMiddleware(userToken, id);
 
-  if((userControl === 1)) {
+  if((userControl === 1 || (userControl === 2))) {
     await UserConversation.findOne({
       attributes: [
         'blocked'
@@ -98,7 +98,7 @@ async function getOneConversation(req, res){
   const userToken = req.body.tokenData;
   const userControl = await securityMiddleware(userToken, id);
 
-  if((userControl === 1)) {
+  if((userControl === 1 || (userControl === 2))) {
     await Messages.findAll({
       attributes: ['message', 'created_at'],
       include: [
@@ -239,7 +239,7 @@ async function updateBlockedConversation(req, res){
     blocked: req.body.blocked,
   };
 
-  if((userControl === 1)) {
+  if((userControl === 1 || (userControl === 2))) {
     await UserConversation.update(blockedValue, {
       where: {
         id: conversationId,

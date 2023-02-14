@@ -3,7 +3,7 @@ const channelRouter = require('./router/channelRouter');
 const channelMessageRouter = require('./router/channelMessageRouter');
 const conversationRouter = require('./router/conversationRouter');
 const conversationMessageRouter = require('./router/conversationMessageRouter');
-const port = 3000;
+const port = 3001;
 
 const express = require('express');
 const cors = require('cors')
@@ -22,17 +22,17 @@ db.sequelize.sync()
 
 
 /** SOCKET.IO */
-const http = require('http');
-const server = http.createServer(app);
-const { Server } = require("socket.io");
-const io = new Server(server);
+// const http = require('http');
+// const server = http.createServer(app);
+// const { Server } = require("socket.io");
+// const io = new Server(server);
 
-io.on('connection', (socket) => {
-  console.log('a user connected');
-  socket.on('disconnect', () => {
-    console.log('user disconnected');
-  });
-});
+// io.on('connection', (socket) => {
+//   console.log('a user connected');
+//   socket.on('disconnect', () => {
+//     console.log('user disconnected');
+//   });
+// });
 
 
 /** CORS ORIGIN */
@@ -40,7 +40,8 @@ const allowedOrigins = [
   `http://localhost:${port}`,
   'http://localhost:19006',
   'http://127.0.0.1:19006',
-  'http://localhost:3001',
+  'http://localhost:3000',
+  'http://127.0.0.1:3000',
 ];
 
 app.use(cors({
