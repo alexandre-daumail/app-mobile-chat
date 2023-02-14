@@ -15,6 +15,8 @@ import FormInput from '../../components/input/FormInput';
 import styles from '../../style/style';
 import { AuthState } from '../../security/Context';
 
+import socket from '../../utils/socket'
+
 
 const ChannelCreate = ({ navigation }) => {
   const { user } = React.useContext(AuthState);
@@ -41,6 +43,8 @@ const ChannelCreate = ({ navigation }) => {
       )
       .then((res) => {
         if(res.status != 'Error') {
+          socket.emit("create-channel", user);
+
           navigation.navigate('ChannelUsers', {
             id: res.data.id,
             name: res.data.name,

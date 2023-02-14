@@ -2,13 +2,14 @@ import * as React from 'react';
 import { 
   SafeAreaView,
   View, 
+  Pressable,
+  Text,
 } from 'react-native';
 
 import { simpleRequestContent } from '../../security/Api';
 
 import KeyboardView from '../../components/keyboard/KeyboardView';
 import FixedHeaderGoBack from '../../components/header/FixedHeaderGoBack';
-import BlackPressable from '../../components/button/BlackPressable';
 import FormInput from '../../components/input/FormInput';
 import SecureInput from '../../components/input/SecureInput';
 
@@ -80,11 +81,13 @@ export default function Register({ navigation }) {
               value={password}
             />
 
-            <BlackPressable 
-              title={'Enregistrer'}
-              onPress={userRegister}
-              text={'Enregistrer'}
-            />
+            <Pressable
+              title={'Inscription'}
+              onPress={() => userRegister()}
+              style={styles.buttonMv}
+            >
+              <Text style={styles.blackBtnText}>Inscription</Text>
+            </Pressable>
           </View>
         </View>
       </KeyboardView>
