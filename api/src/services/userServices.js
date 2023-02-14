@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { generateToken, generateRefreshToken, verifyRefreshToken } = require('../jwt/authJwt');
 const { securityMiddleware } = require('../middlewares/securityMiddleware');
+const { Op } = require('sequelize');
 
 const db = require("../models");
 const User = db.user;
@@ -14,7 +15,10 @@ require('dotenv').config()
 async function getAllUsers(req, res) {
   await User.findAll({
     attributes: [
+      'id',
       'username',
+      'firstname', 
+      'lastname',
     ]
   })
   .then(users => {
@@ -85,8 +89,10 @@ async function getJwt(req, res){
             data: {
               user_id: user.id,
               user_email: user.email,
+              user_role: user.roles,
               access_token: token,
               refresh_token: refreshToken,
+              
             }
           })
         } else {
@@ -104,51 +110,6 @@ async function getJwt(req, res){
       message: err.message,
     });
   }
-}
-
-
-/* PUBLIC : ADMIN LOGIN */
-async function getAdminJwt(req, res){
-  try {
-    const user = await User.findOne({ 
-      where: { 
-        email: req.body.email,
-        roles: 'ADMIN' // Vérifiez si l'utilisateur est un administrateur
-      }
-    });
-    if (!user) {
-      return res.status(401).send({
-        status: 'Error',
-        message: 'Error. Wrong login/password or wrong right'
-      });
-    }
-    const validPassword = await bcrypt.compare(req.body.password, user.password);
-    if (!validPassword) {
-      return res.status(401).send({
-        status: 'Error',
-        message: 'Error. Wrong login/password or wrong right'
-      });
-    }
-    // Générez les jetons d'accès et de rafraîchissement
-    const token = generateToken(user);
-    const refreshToken = generateRefreshToken(user);
-    res.status(201).send({
-      status: 'Success',
-      data: {
-        user_id: user.id,
-        user_email: user.email,
-        user_role : user.roles,
-        access_token: token,
-        refresh_token: refreshToken,
-      }
-    });
-  } catch (err) {
-    res.status(401).send({
-      status: 'Error',
-      message: err.message,
-    });
-  }
-
 }
 
 
@@ -301,7 +262,66 @@ async function deleteUser(req, res){
   const userControl = await securityMiddleware(userToken, id);
 
   if((userControl === 1) || (userControl === 2)) {
-    User.destroy({
+    let deleteConvMessages = await db.conversationMessage.findAll({
+      where: { 
+        [Op.or]: {
+          user_id_from : id,
+          user_id_to: id,
+        }
+       }
+    });
+
+    const convMessagesIds = deleteConvMessages.map(el => el.id);
+    
+    await db.conversationMessage.destroy({
+      where: {
+        [Op.or]: {
+          user_id_from : id,
+          user_id_to: id,
+        }
+      },
+    })
+
+    await db.userConversation.destroy({ 
+      where: { 
+        [Op.or]: {
+          user_id_from : id,
+          user_id_to: id,
+        }
+      } 
+    })
+
+    let deleteChanMessages = await db.channelMessage.findAll({
+      where: { user_id: id }
+    });
+    
+    const deleteMessagesIds = deleteChanMessages.map(el => el.id);
+    
+    await db.channelMessage.destroy({
+      where: {
+        [Op.and]: {
+          id: deleteMessagesIds,
+        },
+      },
+    })
+
+    let deleteUserChannel = await db.userChannel.findAll({
+      where: { user_id: id }
+    })
+
+    const deleteUserChannelIds = deleteUserChannel.map(el => el.id);
+
+    await db.userChannel.destroy({
+      where: {
+        user_id: id,
+      },
+    });
+
+    await db.channel.destroy({ 
+      where: { creator: id } 
+    });
+
+    await User.destroy({
       where: { id: id }
     })
     .then(num => {
@@ -354,7 +374,6 @@ module.exports = {
   getAllUsers,
   createUser,
   getJwt,
-  getAdminJwt,
   getOneUser,
   userJoinChannel,
   updateUser,

@@ -15,30 +15,25 @@ import {
 } from '../../security/Api';
 
 import { getUserId } from '../../security/AsyncStorage';
-import { regenerateToken } from '../../security/Credential';
 
 import FormInput from '../../components/input/FormInput';
 import BlackPressable from '../../components/button/BlackPressable';
 import FixedHeaderGoBack from '../../components/header/FixedHeaderGoBack';
 
 import styles from '../../style/style';
+import { AuthState } from '../../security/Context';
 
 
 export default function ChannelSettings({ route, navigation }) {
   const { id } = route.params;
   const { name } = route.params;
 
-  const [user, setUser] = React.useState(0);
+  const { user } = React.useContext(AuthState);
 
   const [status, setStatus] = React.useState(null);
   const [channelInfo, setChannelInfo] = React.useState(null);
   const [channelName, onChangeName] = React.useState('');
   const [channelDate, setChannelDate] = React.useState(null);
-
-  const userCredential = async () => {
-    await getUserId()
-    .then((res) => setUser(res))
-  }
 
   const getChannelInformations = async () => {
     await simpleRequest(
@@ -55,7 +50,7 @@ export default function ChannelSettings({ route, navigation }) {
   }
 
   const updateChannelName = async () => {
-    if(channelName != '') {
+    if(user != 0 && channelName != '') {
       let newName = {
         name: channelName,
       }
@@ -72,17 +67,19 @@ export default function ChannelSettings({ route, navigation }) {
   }
 
   const deleteChannel = async () => {
-    await secureRequest(
-      `user/${user}/channel/${id}`,
-      'DELETE',
-    )
-    .then((res) => {
-      if(res.status == 'Success') {
-        navigation.navigate('Channels')
-      } else {
-        Alert.alert(res.message)
-      }
-    });
+    if(user != 0) {
+      await secureRequest(
+        `user/${user}/channel/${id}`,
+        'DELETE',
+      )
+      .then((res) => {
+        if(res.status == 'Success') {
+          navigation.navigate('Channels')
+        } else {
+          Alert.alert(res.message)
+        }
+      });
+    }
   }
 
   const formatDate = (dateString) => {
@@ -92,11 +89,8 @@ export default function ChannelSettings({ route, navigation }) {
 
 
   React.useEffect(() => {
-    userCredential();
+    getChannelInformations();
 
-    /**
-    * CLEAN STATE
-    */
     const handleFocus = navigation.addListener('focus', () => {
       getChannelInformations();
     });

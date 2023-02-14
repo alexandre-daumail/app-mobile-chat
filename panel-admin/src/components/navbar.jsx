@@ -1,22 +1,70 @@
-import React from 'react';
-import { CNavbar,CContainer,CNavbarBrand,CButton,CForm} from "@coreui/react";
+import React from 'react'
+import { NavLink } from 'react-router-dom'
+import { useSelector, useDispatch } from 'react-redux'
+import {
+    CContainer, CHeader, CHeaderBrand, CHeaderDivider, CHeaderNav,
+    CHeaderToggler, CNavLink, CNavItem,} from '@coreui/react'
+import CIcon from '@coreui/icons-react'
+import { cilBell, cilEnvelopeOpen, cilList, cilMenu } from '@coreui/icons'
 
-function Navbar () {
 
-            return (
 
-                <CNavbar colorScheme="light" className="bg-light d-flex">
-                    <CContainer>
-                        <div className=" d-flex w-100">
-                            <CNavbarBrand href="#">Nom Prenom </CNavbarBrand>
-                            <CForm>
-                                <CButton className='w-25 ' type="submit" color="danger" variant="outline">
-                                    Déconnexion
-                                </CButton>
-                            </CForm></div>
-                    </CContainer>
-                </CNavbar>
-            )
-};
+const AppHeader = () => {
+    const dispatch = useDispatch()
+    const sidebarShow = useSelector((state) => state.sidebarShow)
 
-export default Navbar;
+    return (
+        <CHeader position="sticky" className="mb-4">
+            <CContainer fluid>
+                <CHeaderToggler
+                    className="ps-1"
+                    onClick={() => dispatch({ type: 'set', sidebarShow: !sidebarShow })}
+                >
+                    <CIcon icon={cilMenu} size="lg" />
+                </CHeaderToggler>
+                <CHeaderBrand className="mx-auto d-md-none" to="/">
+                    <CIcon  height={48} alt="Logo" />
+                </CHeaderBrand>
+                <CHeaderNav className="d-none d-md-flex me-auto">
+                    <CNavItem>
+                        <CNavLink to="/dashboard" component={NavLink}>
+                            Dashboard lol
+                        </CNavLink>
+                    </CNavItem>
+                    <CNavItem>
+                        <CNavLink href="#">Users</CNavLink>
+                    </CNavItem>
+                    <CNavItem>
+                        <CNavLink href="#">Settings</CNavLink>
+                    </CNavItem>
+                </CHeaderNav>
+                <CHeaderNav>
+                    <CNavItem>
+                        <CNavLink href="#">
+                            <CIcon icon={cilBell} size="lg" />
+                        </CNavLink>
+                    </CNavItem>
+                    <CNavItem>
+                        <CNavLink href="#">
+                            <CIcon icon={cilList} size="lg" />
+                        </CNavLink>
+                    </CNavItem>
+                    <CNavItem>
+                        <CNavLink href="#">
+                            <CIcon icon={cilEnvelopeOpen} size="lg" />
+                        </CNavLink>
+                    </CNavItem>
+                </CHeaderNav>
+                <CHeaderNav className="ms-3">
+
+                </CHeaderNav>
+            </CContainer>
+            <CHeaderDivider />
+            <CContainer fluid>
+
+            </CContainer>
+        </CHeader>
+    )
+}
+
+export default AppHeader

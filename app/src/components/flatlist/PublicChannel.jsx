@@ -6,16 +6,18 @@ import {
 } from 'react-native';
 
 import { secureRequest } from '../../security/Api';
+import { AuthState } from '../../security/Context';
 
 import styles from '../../style/style';
 
 
 /**
  * @param {*} channel List of public channels returned by request
- * @param {*} user Connected user ID 
  * @param {*} navigation Usefull for navigate method
  */
-export default function PublicChannel({ channel, user, navigation }) {
+export default function PublicChannel({ channel, navigation }) {
+
+  const { user } = React.useContext(AuthState);
 
   const postJoinChannel = async (id) => {
     await secureRequest(

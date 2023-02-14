@@ -48,12 +48,12 @@ const resetCredentials = async () => {
 
 /**
  * POST
- * regenerateToken use AsyncStorage getRefreshToken function
+ * regenerateToken and add new values in AsyncStorage
  */
 const regenerateToken = async () => {  
   const refresh = await getRefreshToken();
 
-  await fetch("http://127.0.0.1:3000/api/refreshtoken", {
+  await fetch("http://127.0.0.1:3001/api/refreshtoken", {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

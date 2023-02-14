@@ -5,7 +5,6 @@ import {
 } from 'react-native';
 
 import { simpleRequestContent } from '../../security/Api';
-import { setLogged } from '../../security/AsyncStorage';
 import { setCredentials } from '../../security/Credential';
 
 import KeyboardView from '../../components/keyboard/KeyboardView';
@@ -23,7 +22,7 @@ export default function Login({ navigation }) {
   const [email, onChangeEmail] = React.useState('');
   const [password, onChangePassword] = React.useState('');
 
-  const { login } = React.useContext(AuthState);
+  const { setUser } = React.useContext(AuthState);
 
   const userLogin = () => {
     if(email !== '' && password !== ''){
@@ -39,13 +38,13 @@ export default function Login({ navigation }) {
           res.data.refresh_token, 
           res.data.user_id
         )
-        login()
+        setUser(res.data.user_id)
       })
       .catch(error => {
         // handle the error
         console.error(error);
       });
-        }
+    }
   }
 
   return (

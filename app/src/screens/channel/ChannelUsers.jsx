@@ -14,27 +14,21 @@ import {
   secureRequest,
 } from '../../security/Api';
 
-import { getUserId } from '../../security/AsyncStorage';
-import { regenerateToken } from '../../security/Credential';
-
 import styles from '../../style/style';
 import HeaderChat from '../../components/header/HeaderChat';
+import { AuthState } from '../../security/Context';
 
 
 const ChannelUsers = ({ route, navigation }) => {
   const { id } = route.params;
   const { name } = route.params;
 
-  const [user, setUser] = React.useState(0);
+  const { user } = React.useContext(AuthState);
 
   const [status, setStatus] = React.useState(null);
   const [userList, setUserList] = React.useState(null);
   const [addedUsers, setAddedUsers] = React.useState(null);
 
-  const userCredential = async () => {
-    await getUserId()
-    .then((res) => setUser(res))
-  }
 
   const getUserInChannel = async () => {
     await simpleRequest(
@@ -62,34 +56,36 @@ const ChannelUsers = ({ route, navigation }) => {
   }
 
   const addUser = async (userToAdd) => {
-    await secureRequest(
-      `user/${user}/channel/${id}/add/${userToAdd}`,
-      'POST'
-    )
-    .then((res) => {
-      getUserInChannel();
-      getAllUsers();
-    })
+    if(user != 0) {
+      await secureRequest(
+        `user/${user}/channel/${id}/add/${userToAdd}`,
+        'POST'
+      )
+      .then((res) => {
+        getUserInChannel();
+        getAllUsers();
+      })
+    }
   }
 
   const removeUser = async (userToRemove) => {
-    await secureRequest(
-      `user/${user}/channel/${id}/remove/${userToRemove}`,
-      'DELETE'
-    )
-    .then((res) => {
-      getUserInChannel();
-      getAllUsers();
-    })
+    if(user != 0) {
+      await secureRequest(
+        `user/${user}/channel/${id}/remove/${userToRemove}`,
+        'DELETE'
+      )
+      .then((res) => {
+        getUserInChannel();
+        getAllUsers();
+      })
+    }
   }
 
 
   React.useEffect(() => {
-    userCredential();
+    getUserInChannel();
+    getAllUsers();
     
-    /**
-    * CLEAN STATE
-    */
     const handleFocus = navigation.addListener('focus', () => {
       getUserInChannel();
       getAllUsers();

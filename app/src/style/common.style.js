@@ -97,10 +97,9 @@ export default StyleSheet.create({
     borderBottomWidth: 1,
   },
   paddingBorder20: {
-    padding: 10,
-    borderWidth: 0,
-    marginBottom: 50,
-    borderColor: 'white',
+    padding: 20,
+    borderWidth: 1,
+    borderColor: '#F1F1F1',
   },
   border: {
     borderTopWidth: 1,
