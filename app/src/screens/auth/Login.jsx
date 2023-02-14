@@ -25,25 +25,27 @@ export default function Login({ navigation }) {
 
   const { login } = React.useContext(AuthState);
 
-  const userLogin = async () => {
-    if(email != '' && password != ''){
+  const userLogin = () => {
+    if(email !== '' && password !== ''){
       let user = {
         'email': email,
         'password': password,
       }
 
-      await simpleRequestContent('login', 'POST', user)
+      simpleRequestContent('login', 'POST', user)
       .then((res) => {
         setCredentials(
           res.data.access_token, 
           res.data.refresh_token, 
           res.data.user_id
         )
+        login()
       })
-      .then((res) => {
-        return login()
-      })
-    }
+      .catch(error => {
+        // handle the error
+        console.error(error);
+      });
+        }
   }
 
   return (
