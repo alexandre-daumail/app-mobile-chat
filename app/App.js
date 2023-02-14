@@ -8,13 +8,22 @@ import LoggedInNavigator from './src/navigators/LoggedInNavigator';
 
 import { AuthState } from './src/security/Context'
 import Firewall from './src/security/Firewall';
+import { getUserId } from './src/security/AsyncStorage';
 
 
 const Stack = createStackNavigator();
 
 export default function App() {
-
   const [user, setUser] = React.useState(0);
+
+  const userCredential = async () => {
+    await getUserId()
+    .then((res) => setUser(res))
+  }
+
+  React.useEffect(() => {
+    userCredential();
+  }, [])
 
   return (
     <AuthState.Provider value={{ user, setUser }}>

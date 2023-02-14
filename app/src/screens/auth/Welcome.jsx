@@ -19,7 +19,7 @@ export default function Welcome({ navigation }) {
       <Text style={{textAlign:'center'}}>  Discutez et partagez tout simplement.</Text>
 
       <View style={styles.viewAuth}>
-      <Pressable
+        <Pressable
           title={'Connexion'}
           onPress={() => navigation.navigate('Connexion')}
           style={styles.buttonMv2}

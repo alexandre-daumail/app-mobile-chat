@@ -1,24 +1,18 @@
-import React, { useEffect } from 'react';
-import { getUserId } from './AsyncStorage';
+import * as React from 'react';
+import { AuthState } from './Context';
 import { regenerateToken } from './Credential';
 
 function Firewall({ children }) {
-  const [user, setUser] = React.useState(0);
+  const { user } = React.useContext(AuthState);
 
-  const userCredential = async () => {
-    await getUserId()
-    .then((res) => setUser(res))
-  }
-
-  useEffect(() => {
-    userCredential();
-
+  React.useEffect(() => {
     let interval = setInterval(() => {
-        check()
-    }, 1000 * 60 * 5); // 5min : 1000ms * 60 = 60s * 5
+      check()
+    }, 1000 * 60 * 5); 
+    // 1000ms * 60s * 5 = 5min
 
     return function cleanUp() {
-        clearInterval(interval);
+      clearInterval(interval);
     }
   }, [user])
 
@@ -30,11 +24,7 @@ function Firewall({ children }) {
   }
 
 
-  return (
-    <>
-      {children}
-    </>
-  )
+  return <>{children}</>
 }
 
 export default Firewall

@@ -20,6 +20,7 @@ import UserChannels from '../../components/flatlist/UserChannels';
 import styles from '../../style/style';
 import PublicChannel from '../../components/flatlist/PublicChannel';
 import { AuthState } from '../../security/Context';
+import socket from '../../utils/socket';
 
 
 const Channels = ({ navigation }) => {
@@ -43,17 +44,24 @@ const Channels = ({ navigation }) => {
   }
 
   const getChannels = async () => {
-    await secureRequest(
-      `user/${user}/channels`, 
-      'GET',
-    )
-    .then((res) => {
-      setStatus(res.status);
+    socket.emit("get-user-channel", user);
 
-      if(res.status != 'Error') setChannels(res.data);
-    });
+    // await secureRequest(
+    //   `user/${user}/channels`, 
+    //   'GET',
+    // )
+    // .then((res) => {
+    //   setStatus(res.status);
+    
+    //   if(res.status != 'Error') setChannels(res.data);
+    // });
   }
 
+  React.useEffect(() => {
+    socket.on("userChannelList", (res) => {
+      setChannels(res);
+    });
+  }, [socket]);
 
   React.useEffect(() => {
     getAllChannels();

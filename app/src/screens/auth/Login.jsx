@@ -2,6 +2,8 @@ import * as React from 'react';
 import { 
   SafeAreaView,
   View, 
+  Pressable,
+  Text,
 } from 'react-native';
 
 import { simpleRequestContent } from '../../security/Api';
@@ -9,7 +11,6 @@ import { setCredentials } from '../../security/Credential';
 
 import KeyboardView from '../../components/keyboard/KeyboardView';
 import FixedHeaderGoBack from '../../components/header/FixedHeaderGoBack';
-import BlackPressable from '../../components/button/BlackPressable';
 import FormInput from '../../components/input/FormInput';
 import SecureInput from '../../components/input/SecureInput';
 
@@ -63,11 +64,13 @@ export default function Login({ navigation }) {
               value={password}
             />
 
-            <BlackPressable 
+            <Pressable
               title={'Connexion'}
-              onPress={userLogin}
-              text={'Connexion'}
-            />
+              onPress={() => userLogin()}
+              style={styles.buttonMv2}
+            >
+              <Text style={styles.blackBtnText}>Connexion</Text>
+            </Pressable>
           </View>
         </View>
       </KeyboardView>

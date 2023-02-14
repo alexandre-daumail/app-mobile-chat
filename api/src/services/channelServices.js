@@ -118,8 +118,6 @@ async function getAllUsersNotInChannel(req, res){
   })
 
   const userInChannelIds = userInChannel.map(el => el.user_id);
-
-  console.log(userInChannelIds)
   
   await User.findAll({
     attributes: ['id', 'firstname', 'lastname'],
@@ -130,7 +128,6 @@ async function getAllUsersNotInChannel(req, res){
     },
   })
   .then(channelAndUsers => { 
-    console.log(channelAndUsers)
     res.status(200).send({
       status: 'Success',
       data: channelAndUsers,
@@ -434,7 +431,6 @@ async function revokeUserChannel(req, res){
     }
   })
   .then(res => {
-    console.log(res.creator)
     return res.creator
   })
 
