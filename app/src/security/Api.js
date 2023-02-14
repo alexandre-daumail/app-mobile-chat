@@ -7,17 +7,19 @@ const api = "http://10.10.24.16:3001/api/"
  * @param {*} method GET, POST, PUT or DELETE
  */
 const simpleRequest = async (path, method) => {  
-  return fetch(api + path, {
-    method: method,
-    headers: {
-      'Content-Type': 'application/json',
-    }
-  })
-  .then((response) => response.json())
-  .then((data) => {
-    return data
-  });
+  try {
+    const response = await fetch(api + path, {
+      method: method,
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    })
+    const data = await response.json();
+    return data;
+  } catch (error) {
+  console.error(error);
 };
+}
 
 /**
  * Request without access token
@@ -38,7 +40,6 @@ const simpleRequestContent = async (path, method, content) => {
     return data;
   } catch (error) {
     console.error(error);
-    throw error;
   }
 };
 /**
@@ -73,7 +74,7 @@ const secureRequestContent = async (path, method, content) => {
 try {
     const access = await getAccessToken();
   
-    fetch(api + path, {
+    const response = await fetch(api + path, {
       method: method,
       headers: {
         'Content-Type': 'application/json',

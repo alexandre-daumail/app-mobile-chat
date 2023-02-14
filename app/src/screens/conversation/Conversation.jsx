@@ -45,11 +45,10 @@ const Conversation = ({ route, navigation })  => {
   }
 
   const postMessage = async () => {
-    if(user != 0 && message != ''){
+    if(user !== 0 && message !== ''){
       let msg = {
         'message': message,
       }
-      
       await secureRequestContent(
         `user/${user}/conversation/${id}/message`,
         'POST',
@@ -59,7 +58,6 @@ const Conversation = ({ route, navigation })  => {
         if(res.status == 'Blocked') {
           Alert.alert('Votre conversation est bloqué, vous ne pouvez plus rédiger de message.')
         }
-        
         onChangeMessage('');
         getMessages();
       })
