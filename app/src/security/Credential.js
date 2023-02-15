@@ -53,7 +53,7 @@ const resetCredentials = async () => {
 const regenerateToken = async () => {  
   const refresh = await getRefreshToken();
 
-  await fetch("http://127.0.0.1:3001/api/refreshtoken", {
+  await fetch("http://10.10.24.16:3001/api/refreshtoken", {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -64,7 +64,8 @@ const regenerateToken = async () => {
   .then((data) => {
     setAccessToken(data.access_token);
     setRefreshToken(data.refresh_token);
-  });
+  })
+  .catch(console.error(error));
 };
 
 
