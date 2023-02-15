@@ -43,7 +43,7 @@ export default StyleSheet.create({
     ...common.mv15,
   },
   selfAlignItem: {
-    alignSelf: "start",
+    alignSelf: "flex-start",
   },
   grayText: {
     color: '#00000090',
