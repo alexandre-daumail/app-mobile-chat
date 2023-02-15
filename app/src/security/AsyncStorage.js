@@ -101,7 +101,7 @@ const setStorage = async (key, value) => {
 const getStorage = async (key) => {
   try {
     const jsonValue = await AsyncStorage.getItem(key)
-    return jsonValue != null ? JSON.parse(jsonValue) : null;
+    return jsonValue !== null ? JSON.parse(jsonValue) : removeItem(key);
   } catch(e) {
     console.log(e);
   }
