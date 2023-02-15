@@ -54,6 +54,12 @@ const ChannelCreate = ({ navigation }) => {
     }
   }
 
+  React.useEffect(() => {
+    socket.on("get-user-channel", (res) => {
+      console.log(res);
+    });
+  }, [socket]);
+
 
   return (
     <SafeAreaView style={styles.screen}>

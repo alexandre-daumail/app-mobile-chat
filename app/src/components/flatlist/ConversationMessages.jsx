@@ -10,6 +10,7 @@ import { secureRequest } from '../../security/Api';
 import { AuthState } from '../../security/Context';
 
 import styles from '../../style/style';
+import socket from '../../utils/socket';
 
 
 /**
@@ -27,6 +28,7 @@ export default function ConversationMessages({ conversation, id, onPress }) {
       'DELETE',
     )
     .then((res) => {
+      socket.emit("get-conversation-msg", id);
       Alert.alert('Message supprimé')
 
       if(res.status == 'Success') onPress();

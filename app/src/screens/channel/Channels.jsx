@@ -44,24 +44,36 @@ const Channels = ({ navigation }) => {
   }
 
   const getChannels = async () => {
-    socket.emit("get-user-channel", user);
-
-    // await secureRequest(
-    //   `user/${user}/channels`, 
-    //   'GET',
-    // )
-    // .then((res) => {
-    //   setStatus(res.status);
+    await secureRequest(
+      `user/${user}/channels`, 
+      'GET',
+    )
+    .then((res) => {
+      setStatus(res.status);
     
-    //   if(res.status != 'Error') setChannels(res.data);
-    // });
+      if(res.status != 'Error') setChannels(res.data);
+    });
   }
 
-  React.useEffect(() => {
-    socket.on("userChannelList", (res) => {
-      setChannels(res);
-    });
-  }, [socket]);
+  // React.useEffect(() => {
+  //   let interval = setInterval(() => {
+  //     getChannels()
+  //   }, 1000 * 10); 
+
+  //   return function cleanUp() {
+  //     clearInterval(interval);
+  //   }
+  // })
+
+  // React.useEffect(() => {
+  //   socket.on("userChannelList", (res) => {
+  //     setChannels(res);
+  //   });
+
+  //   socket.on('updated-channel', (res) => {
+  //     setChannels(res);
+  //   })
+  // });
 
   React.useEffect(() => {
     getAllChannels();

@@ -17,6 +17,7 @@ import {
 import styles from '../../style/style';
 import HeaderChat from '../../components/header/HeaderChat';
 import { AuthState } from '../../security/Context';
+import socket from '../../utils/socket';
 
 
 const ChannelUsers = ({ route, navigation }) => {

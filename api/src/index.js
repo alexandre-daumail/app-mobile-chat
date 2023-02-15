@@ -5,7 +5,6 @@ const conversationRouter = require('./router/conversationRouter');
 const conversationMessageRouter = require('./router/conversationMessageRouter');
 
 const port = 3001;
-const socketPort = 3002;
 
 const express = require('express');
 const cors = require('cors')
@@ -16,6 +15,7 @@ const db = require('./models');
 const http = require('http');
 const { Server } = require("socket.io");
 const { Socket } = require('./socket');
+
 
 /** DATABASE SYNCHRONISATION */
 db.sequelize.sync()
@@ -55,11 +55,13 @@ app.use(cors({
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-app.use(userRouter);
-app.use(channelRouter);
-app.use(channelMessageRouter);
-app.use(conversationRouter);
-app.use(conversationMessageRouter);
+app.use(
+  userRouter, 
+  channelRouter, 
+  channelMessageRouter, 
+  conversationRouter, 
+  conversationMessageRouter
+);
 
 app.get('/api', (req, res) => {
   return res.status(200).json({
@@ -67,15 +69,11 @@ app.get('/api', (req, res) => {
   })
 })
 
-app.listen(port, () => {
-  console.log(`Listening on port ${port}`);
-});
-
-
-/** SOCKET.IO */
 const server = http.createServer(app);
 const io = new Server(server);
 
 Socket(io);
 
-server.listen(socketPort)
+server.listen(port, () => {
+  console.log(`Listening on port ${port}`);
+})

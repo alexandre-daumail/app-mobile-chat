@@ -9,6 +9,7 @@ import LoggedInNavigator from './src/navigators/LoggedInNavigator';
 import { AuthState } from './src/security/Context'
 import Firewall from './src/security/Firewall';
 import { getUserId } from './src/security/AsyncStorage';
+import { disconnectSocket, initiateSocketConnection } from './src/utils/socket';
 
 
 const Stack = createStackNavigator();

@@ -18,6 +18,7 @@ import IconButton from '../../components/Iconbutton';
 
 import styles from '../../style/style';
 import { AuthState } from '../../security/Context';
+import socket from '../../utils/socket';
 
 
 const Channel = ({ route, navigation }) => {
@@ -32,6 +33,7 @@ const Channel = ({ route, navigation }) => {
 
 
   const getMessages = async () => {
+    // socket.emit("get-channel-msg", id);
     await secureRequest(
       `channel/${id}`, 
       'GET',
@@ -55,11 +57,18 @@ const Channel = ({ route, navigation }) => {
         msg,
       )
       .then((res) => {
+        socket.emit("get-channel-msg", id);
         onChangeMessage('');
-        getMessages();
+        // getMessages();
       })
     }
   }
+
+  React.useEffect(() => {
+    socket.on('channelMsg', (res) => {
+      setChannel(res);
+    })
+  }, [socket]);
 
   React.useEffect(() => {
     getMessages();

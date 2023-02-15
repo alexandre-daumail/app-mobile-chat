@@ -1,3 +1,4 @@
+
 const { securityMiddleware } = require('../middlewares/securityMiddleware');
 const db = require("../models");
 const Messages = db.channelMessage;
@@ -59,7 +60,7 @@ async function createMessage(req, res){
   };
 
   if((userControl === 1) || (userControl === 2)) {
-    Messages.create(msg)
+    await Messages.create(msg)
     .then(msg => {
       res.status(201).send({
         status: 'Success',

@@ -19,6 +19,7 @@ import IconButton from '../../components/Iconbutton';
 
 import styles from '../../style/style';
 import { AuthState } from '../../security/Context';
+import socket from '../../utils/socket';
 
 
 const Conversation = ({ route, navigation })  => {
@@ -45,10 +46,11 @@ const Conversation = ({ route, navigation })  => {
   }
 
   const postMessage = async () => {
-    if(user !== 0 && message !== ''){
+    if(user != 0 && message != ''){
       let msg = {
         'message': message,
       }
+      
       await secureRequestContent(
         `user/${user}/conversation/${id}/message`,
         'POST',
@@ -58,11 +60,19 @@ const Conversation = ({ route, navigation })  => {
         if(res.status == 'Blocked') {
           Alert.alert('Votre conversation est bloqué, vous ne pouvez plus rédiger de message.')
         }
+
+        socket.emit("get-conversation-msg", id);
+        
         onChangeMessage('');
-        getMessages();
       })
     }
   }
+
+  React.useEffect(() => {
+    socket.on('conversationMsg', (res) => {
+      setConversation(res);
+    })
+  }, [socket]);
 
   React.useEffect(() => {
     getMessages();
