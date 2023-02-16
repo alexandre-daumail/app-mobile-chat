@@ -2,64 +2,80 @@ import React, { useState } from 'react';
 import SCLogo from "../assets/images/simplechat.png";
 import { Link } from 'react-router-dom'
 import {
-    CButton, CCard, CCardBody, CCardGroup, CCol, CContainer,
-    CForm, CFormInput, CInputGroup, CInputGroupText, CRow,} from '@coreui/react'
+    CButton,
+    CCard,
+    CCardBody,
+    CCardGroup,
+    CCol,
+    CContainer,
+    CForm,
+    CFormInput,
+    CInputGroup,
+    CInputGroupText,
+    CRow,
+} from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
 
-function LoginForm() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
+const Login = () => {
+    const [email, setEmail] = React.useState('')
+    const [password, setPassword] = React.useState('')
+    const [error, setError] = React.useState('')
 
-    const handleSubmit = event => {
-        event.preventDefault();
+    const handleSubmit = (event) => {
+        event.preventDefault()
         // Vérifiez les informations de connexion ici
-        console.log(email, password);
+        console.log(email, password)
 
         // Envoyer une requête à l'API pour vérifier les informations d'identification
         fetch('http://localhost:3000/api/admin/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password })
+            body: JSON.stringify({ email, password }),
         })
-            .then(response => response.json())
-            .then(data => {
+            .then((response) => response.json())
+            .then((data) => {
                 if (data.error) {
                     // Si la connexion a échoué, afficher un message d'erreur
-                    setError(data.error);
+                    setError(data.error)
                 } else {
                     // Si la connexion a réussi, enregistrer l'utilisateur et rediriger vers la page d'accueil
-                    localStorage.setItem('user', JSON.stringify(data.user));
+                    localStorage.setItem('user', JSON.stringify(data.user))
 
-                    window.location.href = '/admin/panel';
-
+                    window.location.href = '/panel-admin'
                 }
             })
-            .catch(error => {
+            .catch((error) => {
                 // Gérer les erreurs de requête
-                setError('Une erreur s\'est produite lors de la connexion.');
-            });
+                setError("Une erreur s'est produite lors de la connexion.")
+            })
     }
+
     return (
         <div className="bg-light min-vh-100 d-flex flex-row align-items-center">
             <CContainer>
+
                 <CRow className="justify-content-center">
                     <CCol md={4}>
                         <CCardGroup>
                             <CCard className="p-4">
+                                <div className="justify-content-center d-flex">
+                                    <img src={SCLogo} width={'50%'}  alt='SimpleChat'/>
+                                </div>
+
                                 <CCardBody>
                                     <CForm onSubmit={handleSubmit}>
-                                        <CContainer className="text-center">
-                                            <img src={SCLogo}   alt='SimpleChat'/>
-                                        </CContainer>
-
-                                        <h1>Login</h1>
+                                        <h5>Login Admin </h5>
+                                        <p className="text-medium-emphasis">Connectez vous à votre compte</p>
                                         <CInputGroup className="mb-3">
                                             <CInputGroupText>
                                                 <CIcon icon={cilUser} />
                                             </CInputGroupText>
-                                            <CFormInput type="email" placeholder="@Email" autoComplete="username" onChange={e => setEmail(e.target.value)} />
+                                            <CFormInput
+                                                placeholder="@Email"
+                                                autoComplete="username"
+                                                onChange={(e) => setEmail(e.target.value)}
+                                            />
                                         </CInputGroup>
                                         <CInputGroup className="mb-4">
                                             <CInputGroupText>
@@ -69,34 +85,24 @@ function LoginForm() {
                                                 type="password"
                                                 placeholder="Password"
                                                 autoComplete="current-password"
-                                                onChange={e => setPassword(e.target.value)}
+                                                onChange={(e) => setPassword(e.target.value)}
                                             />
                                         </CInputGroup>
-                                        <CRow className="d-flex">
-
-                                            <CCol xs={6}>
-                                                <CButton type="submit" className="w-100" color="success" >
-                                                  Connexion
-                                                </CButton>
-                                            </CCol>
-                                            <CCol xs={6} className="text-right">
-                                                <CButton color="link" className="px-0">
-                                                    Forgot password?
-                                                </CButton>
-                                            </CCol>
+                                        <CRow>
+                                            <CButton type="submit" color="success" className="px-4">
+                                                Login
+                                            </CButton>
                                         </CRow>
                                     </CForm>
                                 </CCardBody>
+                                  <span className="text-danger text-center"> {error}</span>
                             </CCard>
                         </CCardGroup>
                     </CCol>
                 </CRow>
             </CContainer>
         </div>
+    )
+}
 
-
-
-    );
-    }
-
-    export default LoginForm
+export default Login

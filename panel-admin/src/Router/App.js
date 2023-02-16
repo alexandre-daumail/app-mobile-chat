@@ -9,7 +9,7 @@ function AppRoutes() {
 
       <Routes>
         <Route path="/" element={<LoginForm />} />
-        <Route path="/admin/panel" element={<Panel />} />
+        <Route path="/panel-admin" element={<Panel />} />
       </Routes>
 
   );

@@ -1,44 +1,38 @@
-import React, {useState} from 'react';
-import { CSidebar } from '@coreui/react';
-import { CSidebarBrand,CNavItem,CSidebarNav,CSidebarToggler,CNavTitle, CBadge, CNavGroup } from '@coreui/react';
-import CIcon from '@coreui/icons-react';
-import { cilSpeedometer,cilPuzzle } from '@coreui/icons';
+import React from "react";
+import { useSelector, useDispatch } from 'react-redux'
+
+import { CSidebar, CSidebarBrand, CSidebarNav, CSidebarToggler } from '@coreui/react'
+import CIcon from '@coreui/icons-react'
+
 
 const Sidebar = () => {
 
-    const [sidebarShow, setSidebarShow] = useState(true);
+    const dispatch = useDispatch()
+    const unfoldable = useSelector((state) => state.sidebarUnfoldable)
+    const sidebarShow = useSelector((state) => state.sidebarShow)
 
-    const onToggleClick = () => {
-        console.log(sidebarShow)
-            setSidebarShow(!sidebarShow)
 
-    };
     return (
             <aside>
-                <CSidebar> <CSidebarToggler  onClick={onToggleClick} /> </CSidebar>
-                <CSidebar visible={sidebarShow}>
-                    <CSidebarToggler  onClick={onToggleClick} />
-                    <CSidebarBrand>Sidebar Brand</CSidebarBrand>
-                    <CSidebarNav >
-                        <CNavTitle>Nav Title</CNavTitle>
-                        <CNavItem href="#">
-                            <CIcon customClassName="nav-icon" icon={cilSpeedometer} />
-                            Nav item
-                        </CNavItem>
-                        <CNavItem href="#">
-                            <CIcon customClassName="nav-icon" icon={cilSpeedometer} />
-                            With badge
-                            <CBadge color="primary ms-auto">NEW</CBadge>
-                        </CNavItem>
-                        <CNavGroup toggler="Nav dropdown">
-                            <CNavItem href="#">
-                                <CIcon customClassName="nav-icon" icon={cilPuzzle} /> Nav dropdown item
-                            </CNavItem>
-                            <CNavItem href="#">
-                                <CIcon customClassName="nav-icon" icon={cilPuzzle} /> Nav dropdown item
-                            </CNavItem>
-                        </CNavGroup>
+                <CSidebar
+                    position="fixed"
+                    unfoldable={unfoldable}
+                    visible={sidebarShow}
+                    onVisibleChange={(visible) => {
+                        dispatch({ type: 'set', sidebarShow: visible })
+                    }}
+                >
+                    <CSidebarBrand className="d-none d-md-flex" to="/">
+                        <CIcon className="sidebar-brand-full"  height={35} />
+                        <CIcon className="sidebar-brand-narrow"  height={35} />
+                    </CSidebarBrand>
+                    <CSidebarNav>
+
                     </CSidebarNav>
+                    <CSidebarToggler
+                        className="d-none d-lg-flex"
+                        onClick={() => dispatch({ type: 'set', sidebarUnfoldable: !unfoldable })}
+                    />
                 </CSidebar>
             </aside>
 
