@@ -33,7 +33,6 @@ const Channel = ({ route, navigation }) => {
 
 
   const getMessages = async () => {
-    // socket.emit("get-channel-msg", id);
     await secureRequest(
       `channel/${id}`, 
       'GET',
@@ -59,16 +58,18 @@ const Channel = ({ route, navigation }) => {
       .then((res) => {
         socket.emit("get-channel-msg", id);
         onChangeMessage('');
-        // getMessages();
+        getMessages();
       })
     }
   }
+
 
   React.useEffect(() => {
     socket.on('channelMsg', (res) => {
       setChannel(res);
     })
   }, [socket]);
+
 
   React.useEffect(() => {
     getMessages();
