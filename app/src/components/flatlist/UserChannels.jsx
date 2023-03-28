@@ -6,6 +6,7 @@ import {
 } from 'react-native';
 
 import styles from '../../style/style';
+import socket from '../../utils/socket';
 
 
 /**
@@ -13,15 +14,20 @@ import styles from '../../style/style';
  * @param {*} navigation Usefull for navigate method
  */
 export default function UserChannels({ channel, navigation }) {
+
   return (
     <View key={channel.id}>
       <Pressable 
         style={styles.chatBtn}
         title={channel.Channel.id} 
-        onPress={() => { navigation.navigate('Channel', {
+        onPress={() => { 
+          socket.emit('join-channel', `${channel.Channel.name}-${channel.Channel.id}`);
+
+          navigation.navigate('Channel', {
             id: channel.Channel.id,
             name: channel.Channel.name,
-        })}
+          })
+        }
       }>
         <Text style={styles.chatText}>
         {channel.Channel.name}

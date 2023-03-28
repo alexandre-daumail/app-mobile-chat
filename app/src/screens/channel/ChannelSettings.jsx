@@ -14,14 +14,13 @@ import {
   secureRequestContent,
 } from '../../security/Api';
 
-import { getUserId } from '../../security/AsyncStorage';
-
 import FormInput from '../../components/input/FormInput';
 import BlackPressable from '../../components/button/BlackPressable';
 import FixedHeaderGoBack from '../../components/header/FixedHeaderGoBack';
 
 import styles from '../../style/style';
 import { AuthState } from '../../security/Context';
+import socket from '../../utils/socket';
 
 
 export default function ChannelSettings({ route, navigation }) {
@@ -74,6 +73,9 @@ export default function ChannelSettings({ route, navigation }) {
       )
       .then((res) => {
         if(res.status == 'Success') {
+          socket.emit("get-public-channel");
+          socket.emit("get-user-channel", user);
+
           navigation.navigate('Channels')
         } else {
           Alert.alert(res.message)

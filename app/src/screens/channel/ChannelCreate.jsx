@@ -43,7 +43,7 @@ const ChannelCreate = ({ navigation }) => {
       )
       .then((res) => {
         if(res.status != 'Error') {
-          socket.emit("create-channel", user);
+          socket.emit("get-public-channel");
 
           navigation.navigate('ChannelUsers', {
             id: res.data.id,

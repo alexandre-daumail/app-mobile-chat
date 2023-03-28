@@ -9,6 +9,7 @@ import { secureRequest } from '../../security/Api';
 import { AuthState } from '../../security/Context';
 
 import styles from '../../style/style';
+import socket from '../../utils/socket';
 
 
 /**

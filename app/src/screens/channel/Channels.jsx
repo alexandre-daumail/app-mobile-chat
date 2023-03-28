@@ -55,25 +55,14 @@ const Channels = ({ navigation }) => {
     });
   }
 
-  // React.useEffect(() => {
-  //   let interval = setInterval(() => {
-  //     getChannels()
-  //   }, 1000 * 10); 
-
-  //   return function cleanUp() {
-  //     clearInterval(interval);
-  //   }
-  // })
-
-  // React.useEffect(() => {
-  //   socket.on("userChannelList", (res) => {
-  //     setChannels(res);
-  //   });
-
-  //   socket.on('updated-channel', (res) => {
-  //     setChannels(res);
-  //   })
-  // });
+  React.useEffect(() => {
+    socket.on('publicChannelList', (res) => {
+      setChannelList(res);
+    })
+    socket.on('userChannelList', (res) => {
+      setChannels(res);
+    })
+  }, [socket]);
 
   React.useEffect(() => {
     getAllChannels();

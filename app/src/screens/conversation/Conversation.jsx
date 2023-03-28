@@ -62,8 +62,9 @@ const Conversation = ({ route, navigation })  => {
         }
 
         socket.emit("get-conversation-msg", id);
-        
+
         onChangeMessage('');
+        getMessages();
       })
     }
   }

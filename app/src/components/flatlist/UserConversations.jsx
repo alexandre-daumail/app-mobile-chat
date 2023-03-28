@@ -7,7 +7,7 @@ import {
 import { AuthState } from '../../security/Context';
 
 import styles from '../../style/style';
-
+import socket from '../../utils/socket';
 
 /**
  * @param {*} conversation List of conversations returned by request
@@ -31,9 +31,13 @@ export default function UserConversations({ conversation, navigation }) {
 
     if(user == item.id_from.id) {
       routename = item.id_to.firstname + " " + item.id_to.lastname
+      socket.emit('join-conversation', `${user}--with--${item.id_to.id}`);
     } else {
       routename = item.id_from.firstname + " " + item.id_from.lastname
+      socket.emit('join-conversation', `${user}--with--${item.id_from.id}`);
     }
+
+    // socket.emit('join-conversation', user);
 
     return navigation.navigate('Conversation', {
       id: item.id,

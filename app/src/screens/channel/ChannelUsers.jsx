@@ -63,6 +63,7 @@ const ChannelUsers = ({ route, navigation }) => {
         'POST'
       )
       .then((res) => {
+        // socket.emit("get-user-channel", user);
         getUserInChannel();
         getAllUsers();
       })
